@@ -4,6 +4,7 @@
 namespace App\Command;
 
 use App\Entity\UsrWeb71\InterfaceErrorMails;
+use App\Maridis\Mail\Attachment;
 use App\Service\InterfaceAttachment;
 use PhpImap\Exceptions\ConnectionException;
 use Psr\Container\ContainerInterface;
@@ -27,9 +28,9 @@ class InterfaceCommand extends Command
 
     protected $objLogger = NULL;
 
-    protected $objInterfaceAttachment = NULL;
+    // protected $objInterfaceAttachment = NULL;
 
-    public function __construct(ContainerInterface $container, LoggerInterface $logger, InterfaceAttachment $objInterfaceAttachment)
+    public function __construct(ContainerInterface $container, LoggerInterface $logger/*, InterfaceAttachment $objInterfaceAttachment*/)
     {
         parent::__construct();
         $this->objContainer = $container;
@@ -37,8 +38,10 @@ class InterfaceCommand extends Command
 
         // $this->objContainer = $this->getApplication()->getKernel()->getContainer();
         $this->objPropertyAccess = PropertyAccess::createPropertyAccessor();
-        $this->objImap = $this->objContainer->get('secit.imap');
-        $this->objInterfaceAttachment = $objInterfaceAttachment;
+        // $this->objImap = $this->objContainer->get('secit.imap');
+        $this->objImap = $this->objContainer->get('lumturo.imap');
+        $this->objImap->setAttachmentPath(Attachment::tempdir(null, 'interface_attachment'));
+        // $this->objInterfaceAttachment = $objInterfaceAttachment;
     }
 
     protected function configure()
@@ -48,9 +51,10 @@ class InterfaceCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $arrParameters = $this->objContainer->getParameter('interface');
+        $arrParameters = $this->objContainer->getParameter('msc_interface');
+        $test = $this->objContainer->getParameter('secit.imap.connections');//.connections.dev_connection");//.attachments_dir");//, tmpfile());
         try {
-            $objMailBox = $this->objImap->get('dev_connection');
+            $objMailBox = $this->objImap->get('maridis_interface');
 
             $arrMessageIds = $objMailBox->searchMailbox();
         } catch (ConnectionException $objCE) {
@@ -93,7 +97,7 @@ class InterfaceCommand extends Command
             $arrAttachments = $objMail->getAttachments();
             if (!count($arrAttachments)) {
                 $this->objLogger->info('No attachments found.');
-                $objMailBox->deleteMail($objMaliInfox->message_id);
+                $objMailBox->deleteMail($objMailInfo->message_id);
                 continue;
             }
 
@@ -112,10 +116,9 @@ class InterfaceCommand extends Command
                 $objErrorMessage = $objErrorMessageRepository->insertMail($objMailInfo);
             }
 
-            $this->objInterfaceAttachment->init($arrAttachments,$this->objPropertyAccess->getValue($arrParameters, '[7z][bin]') );
-            $this->objInterfaceAttachment->process();
-            // Attachments verarbeiten
-            // $this->progressFiles($arrAttachments);
+            $objMailAttachment = new Attachment($this->objContainer, $arrAttachments,$this->objPropertyAccess->getValue($arrParameters, '[7z][bin]'), $this->objImap->getAttachmentPath());
+            $objMailAttachment->process();
+
 
 
             if ($this->objContainer->getParameter('kernel.environment') == 'prod') {

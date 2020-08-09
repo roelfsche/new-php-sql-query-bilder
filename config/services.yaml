@@ -4,11 +4,17 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    interface:
+    msc_interface:
+        reports:
+            upload_path: '%env(string:REPORT_PATH)%'
         mail:
             max_size: 4194304
         7z:
-            bin: /kunden/pages/1b/84/d0010915/home/bin/7za
+            bin: '%env(string:SEVENZ_BINARY)%' #/kunden/pages/1b/84/d0010915/home/bin/7za
+        mpi:
+            #Entschlüsselungsdaten
+            secret_key: 'inspection123456'
+            init_vector: 'kASD-vfäa3bP9§'
 
 services:
     # default configuration for services in *this* file
@@ -30,4 +36,16 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    
+    logger:
+        alias: 'monolog.logger'
+        public: true
+        
+
+    # erstmal auskommentiert da es bei bin/console debug:autowiring sonst probleme gab
+    #property_accessor:
+    #    public: true
+
+    lumturo.imap: 
+        class: App\Service\Maridis\Imap
+        arguments: ["%secit.imap.connections%"]
+        public: true

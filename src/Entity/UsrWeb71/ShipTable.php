@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ShipTable
  *
  * @ORM\Table(name="ship_table", uniqueConstraints={@ORM\UniqueConstraint(name="id_2", columns={"id"})}, indexes={@ORM\Index(name="id", columns={"id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UsrWeb71\ShipTableRepository")
  */
 class ShipTable
 {
@@ -865,12 +865,12 @@ class ShipTable
         return $this;
     }
 
-    public function getCylCount(): ?bool
+    public function getCylCount(): ?int
     {
         return $this->cylCount;
     }
 
-    public function setCylCount(?bool $cylCount): self
+    public function setCylCount(?int $cylCount): self
     {
         $this->cylCount = $cylCount;
 
@@ -937,48 +937,48 @@ class ShipTable
         return $this;
     }
 
-    public function getSpecPic(): ?bool
+    public function getSpecPic(): ?int
     {
         return $this->specPic;
     }
 
-    public function setSpecPic(bool $specPic): self
+    public function setSpecPic( $specPic): self
     {
         $this->specPic = $specPic;
 
         return $this;
     }
 
-    public function getVorschau(): ?bool
+    public function getVorschau(): ?int
     {
         return $this->vorschau;
     }
 
-    public function setVorschau(bool $vorschau): self
+    public function setVorschau(int $vorschau): self
     {
         $this->vorschau = $vorschau;
 
         return $this;
     }
 
-    public function getAbo(): ?bool
+    public function getAbo(): ?int
     {
         return $this->abo;
     }
 
-    public function setAbo(bool $abo): self
+    public function setAbo(int $abo): self
     {
         $this->abo = $abo;
 
         return $this;
     }
 
-    public function getGl(): ?bool
+    public function getGl(): ?int
     {
         return $this->gl;
     }
 
-    public function setGl(bool $gl): self
+    public function setGl( $gl): self
     {
         $this->gl = $gl;
 
@@ -1045,24 +1045,24 @@ class ShipTable
         return $this;
     }
 
-    public function getPraThermalLoadAlarm(): ?bool
+    public function getPraThermalLoadAlarm(): ?int//bool
     {
         return $this->praThermalLoadAlarm;
     }
 
-    public function setPraThermalLoadAlarm(bool $praThermalLoadAlarm): self
+    public function setPraThermalLoadAlarm(int $praThermalLoadAlarm): self
     {
         $this->praThermalLoadAlarm = $praThermalLoadAlarm;
 
         return $this;
     }
 
-    public function getPraThermalLoadCritical(): ?bool
+    public function getPraThermalLoadCritical(): ?int//bool
     {
         return $this->praThermalLoadCritical;
     }
 
-    public function setPraThermalLoadCritical(bool $praThermalLoadCritical): self
+    public function setPraThermalLoadCritical(int $praThermalLoadCritical): self
     {
         $this->praThermalLoadCritical = $praThermalLoadCritical;
 

@@ -2,7 +2,10 @@
 
 namespace App\Entity\UsrWeb71;
 
+use App\Exception\MscException;
 use Doctrine\ORM\Mapping as ORM;
+use RandomLib\Factory;
+use RandomLib\Generator;
 
 /**
  * GeneratedReports
@@ -80,14 +83,14 @@ class GeneratedReports
     /**
      * @var int
      *
-     * @ORM\Column(name="modify_ts", type="integer", nullable=false)
+     * @ORM\Column(name="modify_ts", type="integer", nullable=false, options={"default": "CURRENT_TIMESTAMP"})
      */
     private $modifyTs;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="create_ts", type="integer", nullable=false)
+     * @ORM\Column(name="create_ts", type="integer", nullable=false, options={"default": "CURRENT_TIMESTAMP"})
      */
     private $createTs;
 
@@ -180,13 +183,22 @@ class GeneratedReports
         return $this;
     }
 
-    public function getData(): ?string
+    /**
+     * mache aus dem Json-String ein array
+     */
+    public function getData(?bool $boolAssoc = true): ?string
     {
-        return $this->data;
+        return json_encode($this->data, $boolAssoc);
     }
 
-    public function setData(?string $data): self
+    /**
+     * string oder array, wenn array, dann --> json_decode
+     */
+    public function setData($data): self
     {
+        if (is_array($data)) {
+            $data = json_encode($data);
+        }
         $this->data = $data;
 
         return $this;
@@ -216,5 +228,47 @@ class GeneratedReports
         return $this;
     }
 
+    /**
+     * verschiebt das File an die richtige Stelle und vergibt einen neuen unique-Namen
+     *
+     * @param string $strSourceFileName - absoluter source-pfad+filename
+     * @param string $strDestinationPath - absoluter Zielpfad mit trailing /
+     */
+    public function moveUploadedFile(string $strSourceFileName, string $strDestinationPath)
+    {
+        // $strDestinationPath = DOCROOT . Kohana::$config->load('report.path');
+        $strDestinationFileName = $strDestinationPath . $this->getFilename();
+
+        // wenn schonmal generiert, alten löschen
+        if (strlen($this->getFilename()) && is_file($strDestinationFileName)) {
+            unlink($strDestinationFileName);
+        }
+
+        // Random-String generieren
+        $objFactory = new Factory();
+        $objGenerator = $objFactory->getLowStrengthGenerator();
+
+        // suche einen neuen namen
+        do {
+            $strRand = $objGenerator->generateString(32, Generator::CHAR_ALPHA) . '.pdf';
+            // $strRand = Text::random(null, 32) . '.pdf';
+            $strPathSuffix = substr($strRand, 0, 2);
+            if (!(is_dir($strDestinationPath . $strPathSuffix))) {
+                mkdir($strDestinationPath . $strPathSuffix, 0777, true);
+            }
+
+            $strDestFilename = $strPathSuffix . DIRECTORY_SEPARATOR . $strRand;
+        } while (file_exists($strDestinationPath . $strDestFilename));
+
+        // if (!rename($strFilename, $strDestinationPath . $strDestFilename)) {
+        if (!rename($strSourceFileName, $strDestinationPath . $strDestFilename)) {
+            throw new MscException('Konnte File nicht verschieben: :src --> :dest', array(
+                ':src' => $strSourceFileName,
+                ':dest' => $strDestinationPath . $strDestFilename,
+            ));
+        }
+
+        $this->setFilename($strDestFilename);
+    }
 
 }

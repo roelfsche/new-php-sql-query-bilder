@@ -1,0 +1,8 @@
+imap:
+    connections:
+        maridis_interface:  
+            mailbox: "{imap.strato.de:993/ssl}INBOX"
+            username: "schnittstellen_test@maridis-support.de"
+            password: "RvmgV3Qd0O"
+#            attachments_dir: "/tmp"
+
