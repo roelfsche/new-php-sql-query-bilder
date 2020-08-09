@@ -7,7 +7,7 @@ set('bin/php', function () {
 });
 
 set('bin/console', function() {
-    return 'bin/console';
+    return '{{release_path}}/bin/console';
 });
 
 // Project name
