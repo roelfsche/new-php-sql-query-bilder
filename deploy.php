@@ -1,17 +1,22 @@
 <?php
 namespace Deployer;
 
-require 'recipe/symfony.php';
+require 'recipe/symfony4.php';
+// musste memory-limit setzen
 set('bin/php', function () {
     return '/usr/bin/php72 -d memory_limit=-1';
 });
 
-set('bin/console', function() {
-    return '{{release_path}}/bin/console';
-});
+
+// set('bin/console', function() {
+//     return '{{release_path}}/bin/console';
+// });
 
 // Project name
 set('application', 'msc_inerface');
+
+// user: Musste gesetzt werden
+set('http_user', 'u2416246');
 
 // Project repository
 set('repository', 'git@bitbucket.org:roelfsche/msc.git');
@@ -43,11 +48,6 @@ host('maridis')
     
 // Tasks
 
-task('pwd', function () {
-    $result = run('pwd');
-    writeln("Current dir: $result");
-});
-
 task('build', function () {
     run('cd {{release_path}} && build');
 });
@@ -57,5 +57,4 @@ after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
 
-before('deploy:symlink', 'database:migrate');
-
+// before('deploy:symlink', 'database:migrate');
