@@ -16,8 +16,8 @@ monolog:
             to_email:   ['rolf.staege@lumturo.net', 'hans.baier@maridis.de']
             subject:    'Logsammler'
             #subject:    'Logsammler-output! %%message%%'
-            # level:      debug
-            level:     info 
+            level:      debug
+            # level:     info 
             formatter:  monolog.formatter.html
             content_type: text/html
         main:
