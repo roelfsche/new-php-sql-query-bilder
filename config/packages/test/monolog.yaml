@@ -2,7 +2,9 @@ monolog:
     handlers:
         app:
             type: fingers_crossed
-            action_level: critical
+            # action_level: critical
+            # dadurch wird eine Mail verschickt, wenn eine Info gelockt wird
+            action_level: info
             handler: deduplicated
             channels: app
         deduplicated:

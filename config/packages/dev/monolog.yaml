@@ -2,7 +2,8 @@ monolog:
     handlers:
         app:
             type: fingers_crossed
-            action_level: critical
+            action_level: info
+            # action_level: critical
             handler: deduplicated
             channels: app
         deduplicated:

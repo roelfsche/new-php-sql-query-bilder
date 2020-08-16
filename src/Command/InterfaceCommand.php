@@ -149,7 +149,7 @@ class InterfaceCommand extends Command
         // } else {
         //     $objMailBox = new Imap(Arr::get($arrMailboxConfig, 'host'));
         // }
-        $this->objLogger->critical("Trigger für E-Mail-Versand...");
+        // $this->objLogger->critical("Trigger für E-Mail-Versand...");
         return 0;
     }
 
