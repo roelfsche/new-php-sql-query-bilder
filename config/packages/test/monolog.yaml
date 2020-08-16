@@ -16,7 +16,8 @@ monolog:
             # to_email:   ['dev1@example.com', 'dev2@example.com', ...]
             subject:    'Logsammler'
             #subject:    'Logsammler-output! %%message%%'
-            level:      debug
+            # level:      debug
+            level:     info 
             formatter:  monolog.formatter.html
             content_type: text/html
         main:
