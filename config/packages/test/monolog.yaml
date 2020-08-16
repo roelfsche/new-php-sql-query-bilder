@@ -1,7 +1,39 @@
 monolog:
     handlers:
+        app:
+            type: fingers_crossed
+            action_level: critical
+            handler: deduplicated
+            channels: app
+        deduplicated:
+            type: deduplication
+            handler: swift
+        swift:
+            type:       swift_mailer
+            from_email: 'schnittstellen_test@maridis-support.de'
+            to_email:   'rolf.staege@lumturo.net'
+            # or list of recipients
+            # to_email:   ['dev1@example.com', 'dev2@example.com', ...]
+            subject:    'Logsammler'
+            #subject:    'Logsammler-output! %%message%%'
+            level:      debug
+            formatter:  monolog.formatter.html
+            content_type: text/html
         main:
-            type: stream
+            type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
+            max_files: 365
             channels: ["!event"]
+        # uncomment to get logging in your browser
+        # you may have to allow bigger header sizes in your Web server configuration
+        #firephp:
+        #    type: firephp
+        #    level: info
+        #chromephp:
+        #    type: chromephp
+        #    level: info
+        console:
+            type: console
+            process_psr_3_messages: false
+            channels: ["!event", "!doctrine", "!console"]
