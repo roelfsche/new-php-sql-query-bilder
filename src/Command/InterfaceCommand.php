@@ -5,7 +5,6 @@ namespace App\Command;
 
 use App\Entity\UsrWeb71\InterfaceErrorMails;
 use App\Maridis\Mail\Attachment;
-use App\Service\InterfaceAttachment;
 use PhpImap\Exceptions\ConnectionException;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -13,28 +12,30 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use SecIT\ImapBundle\Service\Imap;
 
 class InterfaceCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'msc:interface';
 
-    protected $objContainer = NULL;
+    protected $objContainer = null;
 
-    protected $objPropertyAccess = NULL; // für einfachen Zugriff auf Arrays
+    protected $objPropertyAccess = null; // für einfachen Zugriff auf Arrays
 
-    protected $objImap = NULL;
+    protected $objImap = null;
 
-    protected $objLogger = NULL;
+    protected $objLogger = null;
+
+    protected $objSwiftMailer = null;
 
     // protected $objInterfaceAttachment = NULL;
 
-    public function __construct(ContainerInterface $container, LoggerInterface $logger/*, InterfaceAttachment $objInterfaceAttachment*/)
+    public function __construct(ContainerInterface $container, LoggerInterface $appLogger, \Swift_Mailer $mailer/*, InterfaceAttachment $objInterfaceAttachment*/)
     {
         parent::__construct();
         $this->objContainer = $container;
-        $this->objLogger = $logger;
+        $this->objLogger = $appLogger;
+        $this->objSwiftMailer = $mailer;
 
         // $this->objContainer = $this->getApplication()->getKernel()->getContainer();
         $this->objPropertyAccess = PropertyAccess::createPropertyAccessor();
@@ -52,7 +53,21 @@ class InterfaceCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $arrParameters = $this->objContainer->getParameter('msc_interface');
-        $test = $this->objContainer->getParameter('secit.imap.connections');//.connections.dev_connection");//.attachments_dir");//, tmpfile());
+
+        // $this->objLogger->info("Info");
+        // $this->objLogger->notice("notice");
+        // $this->objLogger->warning("warning");
+        // $this->objLogger->error("Error");
+        // $this->objLogger->critical("critical");
+        // return 0;
+        // $message = (new \Swift_Message('Hello Email'))
+        // ->setFrom('schnittstellen_test@maridis-support.de')
+        // ->setTo('rolf.staege@lumturo.net')
+        // ->setBody('<h1>test</h1>', 'text/html');
+        // $this->objSwiftMailer->send($message);
+        // return 0;
+
+        $test = $this->objContainer->getParameter('secit.imap.connections'); //.connections.dev_connection");//.attachments_dir");//, tmpfile());
         try {
             $objMailBox = $this->objImap->get('maridis_interface');
 
@@ -84,11 +99,11 @@ class InterfaceCommand extends Command
             $strFrom = $objMailInfo->from;
             if ($this->objContainer->getParameter('kernel.environment') == 'prod') {
                 $strSmallFrom = strtolower($strFrom);
-                if (strpos($strSmallFrom, '@maridis.de') !== FALSE) {
-                    if (strpos($strSmallFrom, 'test@maridis.de') === FALSE) {
+                if (strpos($strSmallFrom, '@maridis.de') !== false) {
+                    if (strpos($strSmallFrom, 'test@maridis.de') === false) {
                         $objMailBox->deleteMail($objMailInfo->message_id);
                         // Helper_Log::logHtmlSnippet("IGNORIERE EMAIL, KOMMT VON MARIDIS");
-                        $this->objLogger->info("IGNORIERE EMAIL, KOMMT VON MARIDIS");
+                        $this->objLogger->notice("IGNORIERE EMAIL, KOMMT VON MARIDIS");
                         continue;
                     }
                 }
@@ -110,16 +125,14 @@ class InterfaceCommand extends Command
                 $this->objLogger->warning(strtr('E-Mail produces Exception; Message-ID = :message_id, Subject = :subject, first processed on :date; try again', [
                     ':message_id' => $objMailInfo->message_id,
                     ':subject' => $objMailInfo->subject,
-                    ':date' => date('d.m.Y H:i:s', $objErrorMessage->getCreateTs())
+                    ':date' => date('d.m.Y H:i:s', $objErrorMessage->getCreateTs()),
                 ]));
             } else {
                 $objErrorMessage = $objErrorMessageRepository->insertMail($objMailInfo);
             }
 
-            $objMailAttachment = new Attachment($this->objContainer, $arrAttachments,$this->objPropertyAccess->getValue($arrParameters, '[7z][bin]'), $this->objImap->getAttachmentPath());
+            $objMailAttachment = new Attachment($this->objContainer, $arrAttachments, $this->objPropertyAccess->getValue($arrParameters, '[7z][bin]'), $this->objImap->getAttachmentPath());
             $objMailAttachment->process();
-
-
 
             if ($this->objContainer->getParameter('kernel.environment') == 'prod') {
                 // wird sofort gelöscht
@@ -129,7 +142,6 @@ class InterfaceCommand extends Command
             $objDoctrineManager->remove($objErrorMessage);
             $objDoctrineManager->flush();
 
-
             $a = 0;
         }
         // if ($this->objPropertyAccss->isReadable($arrMailboxConfig, 'port')) {
@@ -137,8 +149,9 @@ class InterfaceCommand extends Command
         // } else {
         //     $objMailBox = new Imap(Arr::get($arrMailboxConfig, 'host'));
         // }
+        $this->objLogger->critical("Trigger für E-Mail-Versand...");
         return 0;
     }
 
-        //        Interface_Attachment::rmTmpDir($this->strTmpDir);
+    //        Interface_Attachment::rmTmpDir($this->strTmpDir);
 }

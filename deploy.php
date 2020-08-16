@@ -25,7 +25,7 @@ set('repository', 'git@bitbucket.org:roelfsche/msc.git');
 set('git_tty', true); 
 
 // Shared files/dirs between deploys 
- add('shared_files', ['.env']);
+ add('shared_files', ['.env', 'config/packages/doctrine.yml']);
 // add('shared_dirs', []);
 
 // Writable dirs by web server 
@@ -34,7 +34,7 @@ set('git_tty', true);
 
 // Hosts
 
-host('maridis')
+host('maridis-testing')
     ->stage('testing')
     ->roles('app')
     ->port(22)
@@ -44,7 +44,7 @@ host('maridis')
     ->multiplexing(true)
     ->addSshOption('UserKnownHostsFile', '/dev/null')
     ->addSshOption('StrictHostKeyChecking', 'no')
-    ->set('deploy_path', '~/htdocs/msc/symfony/development');    
+    ->set('deploy_path', '~/htdocs/msc/symfony/testing');    
     
 // Tasks
 

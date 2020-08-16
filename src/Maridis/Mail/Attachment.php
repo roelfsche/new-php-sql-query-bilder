@@ -109,11 +109,11 @@ class Attachment
 
         // extrahiere alle Files aus allen Archiven
         foreach ($this->arrAttachments as $objAttachment) {
-            $this->objLogger->info('Saving / unzipping attachment: ' . $objAttachment->name);
+            $this->objLogger->debug('Saving / unzipping attachment: ' . $objAttachment->name);
 
             if (!preg_match('/(zip|7z|cpa|mpd|noon|mpi|pdf)/i', strtolower($objAttachment->name))) {
 
-                $this->objLogger->info('No Maridis-File (zip|7z|cpa|mpd|noon|mpi|pdf); ignore..');
+                $this->objLogger->debug('No Maridis-File (zip|7z|cpa|mpd|noon|mpi|pdf); ignore..');
                 continue;
             }
             // $objAttachment->filePath = $this->strPath . $objAttachment->name;
@@ -128,7 +128,7 @@ class Attachment
             } catch (ProcessFailedException $objPFE) {
                 $this->objLogger->error('Error while unzipping Attachment ' . $objAttachment->name);
                 $this->objLogger->error($objPFE->getMessage());
-                $this->objLogger->error('No attachment processed');
+                $this->objLogger->error('attachment will not be processed');
             } catch (ErrorException $objE) {
                 $this->objLogger->error('Error while saving Attachment ' . $objAttachment->name);
                 $this->objLogger->error($objE->getMessage());
@@ -167,6 +167,7 @@ class Attachment
                 $objPdfFile->process();
 
             } catch (MscException $objMscExcpetion) {
+                    $this->objLogger->error($objMscExcpetion->getMessage());
                 // Helper_Log::logException($objMscExcpetion);
             }
         }
