@@ -11,9 +11,9 @@ monolog:
         swift:
             type:       swift_mailer
             from_email: 'schnittstellen_test@maridis-support.de'
-            to_email:   'rolf.staege@lumturo.net'
+            # to_email:   'rolf.staege@lumturo.net'
             # or list of recipients
-            # to_email:   ['dev1@example.com', 'dev2@example.com', ...]
+            to_email:   ['rolf.staege@lumturo.net', 'hans.baier@maridis.de']
             subject:    'Logsammler'
             #subject:    'Logsammler-output! %%message%%'
             # level:      debug
