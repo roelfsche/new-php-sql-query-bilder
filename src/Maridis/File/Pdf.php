@@ -23,7 +23,7 @@ class Pdf extends File implements FileInterface
         parent::__construct($objContainer, $resFileHandle);
 
         $arrParameters = $this->objContainer->getParameter('msc_interface');
-        $this->strUploadPath = $this->objPropertAccess->getValue($arrParameters, '[reports][upload_path]');
+        $this->strUploadPath = rtrim($this->objPropertAccess->getValue($arrParameters, '[reports][upload_path]'), '/') . '/';
         $this->strFileName = basename($this->strAbsoluteFileName);
     }
 
