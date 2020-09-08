@@ -12,6 +12,7 @@ use App\Maridis\File\VoyageReport;
 use Doctrine\Common\Persistence\ObjectManager;
 use ErrorException;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\PropertyAccess\PropertyAccess;

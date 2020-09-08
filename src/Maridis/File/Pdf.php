@@ -84,7 +84,7 @@ class Pdf extends File implements FileInterface
         $objDoctrineManager->flush();
 
         // $objDbReport->save();
-
+        $this->objLogger->debug("PDF-Datei " . $this->strFileName . " in der DB gespeichert.");
         // Helper_Log::logHtmlSnippet('PDF :pdf erfolgreich verarbeitet.', array(
         //     ':pdf' => $this->strFilename,
         // ));

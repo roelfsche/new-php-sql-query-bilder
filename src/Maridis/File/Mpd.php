@@ -59,6 +59,8 @@ class Mpd extends File implements FileInterface
         $objShipRepository = $this->objDoctrineDefaultManager->getRepository(UsrWeb71ShipTable::class);
         $this->objShip = $objShipRepository->findByMarprimeSerialNo($this->strMpdSerialNumber);
 
+        $this->objLogger->info("processing data for ship " . $this->objShip->getAktName());
+
         while (!feof($this->resFileHandle)) {
             $strContent = fread($this->resFileHandle, 25);
             if (!feof($this->resFileHandle)) {
@@ -74,6 +76,8 @@ class Mpd extends File implements FileInterface
                                 ':filename' => $this->strFilename,
                             )));
                         }
+
+        $this->objLogger->info("  MeasurementTime=" . date('H:i:s d.M.Y', $meas_data[0]['MeasurementTime']));//processing data for ship " . $this->objShip->getAktName());
                         break;
                     case (strpos($strContent, "_CPA_Params_") !== false):
                         fseek($this->resFileHandle, strpos($strContent, "_CPA_Params_") - 25, SEEK_CUR);
@@ -107,6 +111,7 @@ class Mpd extends File implements FileInterface
                         );
                         break;
                     default:
+                    $this->objLogger->warning("Couldn't identify data part: " . $strContent);
                         break;
                 }
             }
