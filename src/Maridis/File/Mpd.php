@@ -111,7 +111,7 @@ class Mpd extends File implements FileInterface
                         );
                         break;
                     default:
-                    $this->objLogger->warning("Couldn't identify data part: " . $strContent);
+                    // $this->objLogger->warning("Couldn't identify data part: " . $strContent);
                         break;
                 }
             }
