@@ -90,7 +90,8 @@ class InterfaceCommand extends Command
             // check Grösse
             if ($objMailInfo->size > $this->objPropertyAccess->getValue($arrParameters, '[mail][max_size]')) {
                 $this->objLogger->warning('E-Mail size exceeds limit; not processed...');
-                $objMailBox->deleteMail($objMailInfo->message_id);
+                // $objMailBox->deleteMail($objMailInfo->message_id);
+                $objMailBox->deleteMail($intMessageId);
                 continue;
             }
 
@@ -101,7 +102,8 @@ class InterfaceCommand extends Command
                 $strSmallFrom = strtolower($strFrom);
                 if (strpos($strSmallFrom, '@maridis.de') !== false) {
                     if (strpos($strSmallFrom, 'test@maridis.de') === false) {
-                        $objMailBox->deleteMail($objMailInfo->message_id);
+                        // $objMailBox->deleteMail($objMailInfo->message_id);
+                        $objMailBox->deleteMail($intMessageId);
                         // Helper_Log::logHtmlSnippet("IGNORIERE EMAIL, KOMMT VON MARIDIS");
                         $this->objLogger->notice("IGNORIERE EMAIL, KOMMT VON MARIDIS");
                         continue;
@@ -112,7 +114,8 @@ class InterfaceCommand extends Command
             $arrAttachments = $objMail->getAttachments();
             if (!count($arrAttachments)) {
                 $this->objLogger->info('No attachments found.');
-                $objMailBox->deleteMail($objMailInfo->message_id);
+                // $objMailBox->deleteMail($objMailInfo->message_id);
+                $objMailBox->deleteMail($intMessageId);
                 continue;
             }
 
@@ -136,7 +139,8 @@ class InterfaceCommand extends Command
 
             if ($this->objContainer->getParameter('kernel.environment') == 'prod') {
                 // wird sofort gelöscht
-                $objMailBox->deleteMail($objMailInfo->message_id);
+                // $objMailBox->deleteMail($objMailInfo->message_id);
+                $objMailBox->deleteMail($intMessageId);
             }
 
             $objDoctrineManager->remove($objErrorMessage);
