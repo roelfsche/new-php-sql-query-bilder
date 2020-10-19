@@ -15,7 +15,7 @@ monolog:
             from_email: 'schnittstellen_test@maridis-support.de'
             # to_email:   'rolf.staege@lumturo.net'
             # or list of recipients
-            to_email:   ['rolf.staege@lumturo.net', 'hans.baier@maridis.de']
+            to_email:   ['rolf.staege@lumturo.net', 'logsammler@maridis.de']
             subject:    'Logsammler'
             #subject:    'Logsammler-output! %%message%%'
             level:      debug

@@ -12,7 +12,7 @@ monolog:
         swift:
             type:       swift_mailer
             from_email: 'dailymail@maridis.de'
-            to_email:   'hans.baier@maridis.de'
+            to_email:   'logsammler@maridis.de'
             # or list of recipients
             # to_email:   ['dev1@example.com', 'dev2@example.com', ...]
             subject:    'Logsammler'
