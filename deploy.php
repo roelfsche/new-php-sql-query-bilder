@@ -34,7 +34,19 @@ set('git_tty', true);
 
 // Hosts
 
-host('maridis-testing')
+host('maridis-test')
+    ->stage('test')
+    ->roles('app')
+    ->port(22)
+    ->configFile('~/.ssh/config')
+    ->identityFile('~/.ssh/id_rsa')
+    ->forwardAgent(true)
+    ->multiplexing(true)
+    ->addSshOption('UserKnownHostsFile', '/dev/null')
+    ->addSshOption('StrictHostKeyChecking', 'no')
+    ->set('deploy_path', '~/htdocs/msc/symfony/test');    
+    
+host('maridis-prod')
     ->stage('testing')
     ->roles('app')
     ->port(22)
@@ -44,8 +56,7 @@ host('maridis-testing')
     ->multiplexing(true)
     ->addSshOption('UserKnownHostsFile', '/dev/null')
     ->addSshOption('StrictHostKeyChecking', 'no')
-    ->set('deploy_path', '~/htdocs/msc/symfony/testing');    
-    
+    ->set('deploy_path', '~/htdocs/msc/symfony/prod');    
 // Tasks
 
 task('build', function () {

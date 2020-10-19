@@ -2,7 +2,8 @@ imap:
     connections:
         maridis_interface:  
             mailbox: "{imap.strato.de:993/ssl}INBOX"
-            username: "schnittstellen_test@maridis-support.de"
-            password: "RvmgV3Qd0O"
+            #username: "schnittstellen_test@maridis-support.de"
+            username: '%env(resolve:IMAP_USER)%'
+            password: '%env(resolve:IMAP_PASS)%'
 #            attachments_dir: "/tmp"
 
