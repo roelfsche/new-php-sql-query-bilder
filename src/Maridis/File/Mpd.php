@@ -77,7 +77,7 @@ class Mpd extends File implements FileInterface
                             )));
                         }
 
-        $this->objLogger->info("  MeasurementTime=" . date('H:i:s d.M.Y', $meas_data[0]['MeasurementTime']));//processing data for ship " . $this->objShip->getAktName());
+                        $this->objLogger->info("  MeasurementTime=" . date('H:i:s d.M.Y', $meas_data[0]['MeasurementTime'])); //processing data for ship " . $this->objShip->getAktName());
                         break;
                     case (strpos($strContent, "_CPA_Params_") !== false):
                         fseek($this->resFileHandle, strpos($strContent, "_CPA_Params_") - 25, SEEK_CUR);
@@ -111,12 +111,12 @@ class Mpd extends File implements FileInterface
                         );
                         break;
                     default:
-                    // $this->objLogger->warning("Couldn't identify data part: " . $strContent);
+                        // $this->objLogger->warning("Couldn't identify data part: " . $strContent);
                         break;
                 }
             }
         }
-        $this->setLastMeasurementData((int)$this->arrHeader['lastUpdateTimestamp'], NULL, NULL, $this->arrHeader['SerialNo']);
+        $this->setLastMeasurementData((int) $this->arrHeader['lastUpdateTimestamp'], null, null, $this->arrHeader['SerialNo']);
     }
 
     private function readHeader()
@@ -429,8 +429,12 @@ class Mpd extends File implements FileInterface
             $m_ind = round((($max_ind - $min_ind) * 100) / ($sum_ind / $Measured_cyl), 2);
         }
 
-        $sql = "UPDATE ship_table SET load_value = " . $m_ind . ", load_date = '" . date("Y-m-d", $meastime) . "' WHERE MarPrime_SerialNo = '" . $this->arrHeader['SerialNo'] . "'";
-        $this->executeQuery($sql);
+        if ($m_ind) {
+            $sql = "UPDATE ship_table SET load_value = " . $m_ind . ", load_date = '" . date("Y-m-d", $meastime) . "' WHERE MarPrime_SerialNo = '" . $this->arrHeader['SerialNo'] . "'";
+            $this->executeQuery($sql);
+        } else {
+            $this->objLogger->warning('Could not calculate load_value');
+        }
         // if (!mysql_query($sql, $_SESSION['DB_CONNECTION']['usr_web7_1'])) {
         //     echo "Fehler beim Update des 'load_balance' Wertes.\n";
         // }
