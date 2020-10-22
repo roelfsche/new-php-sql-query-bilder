@@ -88,7 +88,8 @@ class InterfaceAttachment
                 $this->objLogger->info('No Maridis-File (zip|7z|cpa|mpd|noon|mpi|pdf); ignore..');
                 continue;
             }
-            $objAttachment->filePath = $this->strPath . $objAttachment->name;
+            $objAttachment->setFilePath($this->strPath . $objAttachment->name);
+            // $objAttachment->filePath = $this->strPath . $objAttachment->name;
             try {
                 $objAttachment->saveToDisk();
                 $this->arrFiles = array_merge($this->arrFiles + $this->_extract($objAttachment->filePath));
