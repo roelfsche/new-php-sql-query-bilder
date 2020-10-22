@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -108,6 +108,141 @@ class MpdHistory
      * @ORM\Column(name="leakage", type="float", precision=10, scale=0, nullable=false)
      */
     private $leakage = '0';
+
+    public function getCylNo(): ?bool
+    {
+        return $this->cylNo;
+    }
+
+    public function getMarprimeSerialno(): ?string
+    {
+        return $this->marprimeSerialno;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getMeasurementtime(): ?\DateTimeInterface
+    {
+        return $this->measurementtime;
+    }
+
+    public function getRevolution(): ?float
+    {
+        return $this->revolution;
+    }
+
+    public function setRevolution(float $revolution): self
+    {
+        $this->revolution = $revolution;
+
+        return $this;
+    }
+
+    public function getScavAir(): ?float
+    {
+        return $this->scavAir;
+    }
+
+    public function setScavAir(float $scavAir): self
+    {
+        $this->scavAir = $scavAir;
+
+        return $this;
+    }
+
+    public function getCompPressure(): ?float
+    {
+        return $this->compPressure;
+    }
+
+    public function setCompPressure(float $compPressure): self
+    {
+        $this->compPressure = $compPressure;
+
+        return $this;
+    }
+
+    public function getMaxPressure(): ?float
+    {
+        return $this->maxPressure;
+    }
+
+    public function setMaxPressure(float $maxPressure): self
+    {
+        $this->maxPressure = $maxPressure;
+
+        return $this;
+    }
+
+    public function getMeanIndPressure(): ?float
+    {
+        return $this->meanIndPressure;
+    }
+
+    public function setMeanIndPressure(float $meanIndPressure): self
+    {
+        $this->meanIndPressure = $meanIndPressure;
+
+        return $this;
+    }
+
+    public function getIndPower(): ?float
+    {
+        return $this->indPower;
+    }
+
+    public function setIndPower(float $indPower): self
+    {
+        $this->indPower = $indPower;
+
+        return $this;
+    }
+
+    public function getAnglePmax(): ?float
+    {
+        return $this->anglePmax;
+    }
+
+    public function setAnglePmax(float $anglePmax): self
+    {
+        $this->anglePmax = $anglePmax;
+
+        return $this;
+    }
+
+    public function getPcompRelPscav(): ?float
+    {
+        return $this->pcompRelPscav;
+    }
+
+    public function setPcompRelPscav(float $pcompRelPscav): self
+    {
+        $this->pcompRelPscav = $pcompRelPscav;
+
+        return $this;
+    }
+
+    public function getLeakage(): ?float
+    {
+        return $this->leakage;
+    }
+
+    public function setLeakage(float $leakage): self
+    {
+        $this->leakage = $leakage;
+
+        return $this;
+    }
 
 
 }

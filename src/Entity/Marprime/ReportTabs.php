@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,6 +43,40 @@ class ReportTabs
      * @ORM\Column(name="BoxCount", type="smallint", nullable=false)
      */
     private $boxcount;
+
+    public function getReportid(): ?string
+    {
+        return $this->reportid;
+    }
+
+    public function getTab(): ?int
+    {
+        return $this->tab;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getBoxcount(): ?int
+    {
+        return $this->boxcount;
+    }
+
+    public function setBoxcount(int $boxcount): self
+    {
+        $this->boxcount = $boxcount;
+
+        return $this;
+    }
 
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -68,6 +68,62 @@ class MpdPressureCurveData
      * @ORM\Column(name="revolution", type="float", precision=10, scale=3, nullable=false)
      */
     private $revolution;
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function getCylNo(): ?bool
+    {
+        return $this->cylNo;
+    }
+
+    public function getXVal(): ?int
+    {
+        return $this->xVal;
+    }
+
+    public function getMarprimeSerialno(): ?string
+    {
+        return $this->marprimeSerialno;
+    }
+
+    public function getMeasurementtime(): ?\DateTimeInterface
+    {
+        return $this->measurementtime;
+    }
+
+    public function setMeasurementtime(\DateTimeInterface $measurementtime): self
+    {
+        $this->measurementtime = $measurementtime;
+
+        return $this;
+    }
+
+    public function getYVal(): ?float
+    {
+        return $this->yVal;
+    }
+
+    public function setYVal(float $yVal): self
+    {
+        $this->yVal = $yVal;
+
+        return $this;
+    }
+
+    public function getRevolution(): ?float
+    {
+        return $this->revolution;
+    }
+
+    public function setRevolution(float $revolution): self
+    {
+        $this->revolution = $revolution;
+
+        return $this;
+    }
 
 
 }

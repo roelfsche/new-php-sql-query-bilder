@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -155,6 +155,232 @@ class MeasurementParams
      * @ORM\Column(name="limit_power", type="float", precision=10, scale=0, nullable=false)
      */
     private $limitPower;
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function getMarprimeSerialno(): ?string
+    {
+        return $this->marprimeSerialno;
+    }
+
+    public function getConvergence(): ?float
+    {
+        return $this->convergence;
+    }
+
+    public function setConvergence(float $convergence): self
+    {
+        $this->convergence = $convergence;
+
+        return $this;
+    }
+
+    public function getAlpha1(): ?float
+    {
+        return $this->alpha1;
+    }
+
+    public function setAlpha1(float $alpha1): self
+    {
+        $this->alpha1 = $alpha1;
+
+        return $this;
+    }
+
+    public function getAlpha2(): ?float
+    {
+        return $this->alpha2;
+    }
+
+    public function setAlpha2(float $alpha2): self
+    {
+        $this->alpha2 = $alpha2;
+
+        return $this;
+    }
+
+    public function getMonitor(): ?int
+    {
+        return $this->monitor;
+    }
+
+    public function setMonitor(int $monitor): self
+    {
+        $this->monitor = $monitor;
+
+        return $this;
+    }
+
+    public function getLeakageLeftStart(): ?int
+    {
+        return $this->leakageLeftStart;
+    }
+
+    public function setLeakageLeftStart(int $leakageLeftStart): self
+    {
+        $this->leakageLeftStart = $leakageLeftStart;
+
+        return $this;
+    }
+
+    public function getLeakageLeftEnd(): ?int
+    {
+        return $this->leakageLeftEnd;
+    }
+
+    public function setLeakageLeftEnd(int $leakageLeftEnd): self
+    {
+        $this->leakageLeftEnd = $leakageLeftEnd;
+
+        return $this;
+    }
+
+    public function getLeakageRightStart(): ?int
+    {
+        return $this->leakageRightStart;
+    }
+
+    public function setLeakageRightStart(int $leakageRightStart): self
+    {
+        $this->leakageRightStart = $leakageRightStart;
+
+        return $this;
+    }
+
+    public function getLeakageRightEnd(): ?int
+    {
+        return $this->leakageRightEnd;
+    }
+
+    public function setLeakageRightEnd(int $leakageRightEnd): self
+    {
+        $this->leakageRightEnd = $leakageRightEnd;
+
+        return $this;
+    }
+
+    public function getNormalisationLimitStart(): ?float
+    {
+        return $this->normalisationLimitStart;
+    }
+
+    public function setNormalisationLimitStart(float $normalisationLimitStart): self
+    {
+        $this->normalisationLimitStart = $normalisationLimitStart;
+
+        return $this;
+    }
+
+    public function getNormalisationLimitEnd(): ?float
+    {
+        return $this->normalisationLimitEnd;
+    }
+
+    public function setNormalisationLimitEnd(float $normalisationLimitEnd): self
+    {
+        $this->normalisationLimitEnd = $normalisationLimitEnd;
+
+        return $this;
+    }
+
+    public function getDiagnosticRangeStart(): ?float
+    {
+        return $this->diagnosticRangeStart;
+    }
+
+    public function setDiagnosticRangeStart(float $diagnosticRangeStart): self
+    {
+        $this->diagnosticRangeStart = $diagnosticRangeStart;
+
+        return $this;
+    }
+
+    public function getDiagnosticRangeEnd(): ?float
+    {
+        return $this->diagnosticRangeEnd;
+    }
+
+    public function setDiagnosticRangeEnd(float $diagnosticRangeEnd): self
+    {
+        $this->diagnosticRangeEnd = $diagnosticRangeEnd;
+
+        return $this;
+    }
+
+    public function getDiagnosticWeightStart(): ?float
+    {
+        return $this->diagnosticWeightStart;
+    }
+
+    public function setDiagnosticWeightStart(float $diagnosticWeightStart): self
+    {
+        $this->diagnosticWeightStart = $diagnosticWeightStart;
+
+        return $this;
+    }
+
+    public function getDiagnosticWeightEnd(): ?float
+    {
+        return $this->diagnosticWeightEnd;
+    }
+
+    public function setDiagnosticWeightEnd(float $diagnosticWeightEnd): self
+    {
+        $this->diagnosticWeightEnd = $diagnosticWeightEnd;
+
+        return $this;
+    }
+
+    public function getAeAmplification(): ?float
+    {
+        return $this->aeAmplification;
+    }
+
+    public function setAeAmplification(float $aeAmplification): self
+    {
+        $this->aeAmplification = $aeAmplification;
+
+        return $this;
+    }
+
+    public function getLimitPmax(): ?float
+    {
+        return $this->limitPmax;
+    }
+
+    public function setLimitPmax(float $limitPmax): self
+    {
+        $this->limitPmax = $limitPmax;
+
+        return $this;
+    }
+
+    public function getLimitPcomp(): ?float
+    {
+        return $this->limitPcomp;
+    }
+
+    public function setLimitPcomp(float $limitPcomp): self
+    {
+        $this->limitPcomp = $limitPcomp;
+
+        return $this;
+    }
+
+    public function getLimitPower(): ?float
+    {
+        return $this->limitPower;
+    }
+
+    public function setLimitPower(float $limitPower): self
+    {
+        $this->limitPower = $limitPower;
+
+        return $this;
+    }
 
 
 }

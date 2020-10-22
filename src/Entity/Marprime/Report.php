@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -92,6 +92,124 @@ class Report
      * @ORM\Column(name="TabCount", type="smallint", nullable=false)
      */
     private $tabcount;
+
+    public function getMarprimeserial(): ?string
+    {
+        return $this->marprimeserial;
+    }
+
+    public function getReportid(): ?string
+    {
+        return $this->reportid;
+    }
+
+    public function setReportid(string $reportid): self
+    {
+        $this->reportid = $reportid;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function getMpdfilename(): ?string
+    {
+        return $this->mpdfilename;
+    }
+
+    public function setMpdfilename(string $mpdfilename): self
+    {
+        $this->mpdfilename = $mpdfilename;
+
+        return $this;
+    }
+
+    public function getEnginename(): ?string
+    {
+        return $this->enginename;
+    }
+
+    public function setEnginename(string $enginename): self
+    {
+        $this->enginename = $enginename;
+
+        return $this;
+    }
+
+    public function getEnginetype(): ?string
+    {
+        return $this->enginetype;
+    }
+
+    public function setEnginetype(string $enginetype): self
+    {
+        $this->enginetype = $enginetype;
+
+        return $this;
+    }
+
+    public function getReportname(): ?string
+    {
+        return $this->reportname;
+    }
+
+    public function setReportname(string $reportname): self
+    {
+        $this->reportname = $reportname;
+
+        return $this;
+    }
+
+    public function getReportversion(): ?string
+    {
+        return $this->reportversion;
+    }
+
+    public function setReportversion(string $reportversion): self
+    {
+        $this->reportversion = $reportversion;
+
+        return $this;
+    }
+
+    public function getXmlversion(): ?string
+    {
+        return $this->xmlversion;
+    }
+
+    public function setXmlversion(string $xmlversion): self
+    {
+        $this->xmlversion = $xmlversion;
+
+        return $this;
+    }
+
+    public function getStrokes(): ?int
+    {
+        return $this->strokes;
+    }
+
+    public function setStrokes(int $strokes): self
+    {
+        $this->strokes = $strokes;
+
+        return $this;
+    }
+
+    public function getTabcount(): ?int
+    {
+        return $this->tabcount;
+    }
+
+    public function setTabcount(int $tabcount): self
+    {
+        $this->tabcount = $tabcount;
+
+        return $this;
+    }
 
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -63,6 +63,43 @@ class ReportStringgrids
      * @ORM\Column(name="Values", type="text", length=65535, nullable=false)
      */
     private $values;
+
+    public function getReportid(): ?string
+    {
+        return $this->reportid;
+    }
+
+    public function getTab(): ?int
+    {
+        return $this->tab;
+    }
+
+    public function getBox(): ?int
+    {
+        return $this->box;
+    }
+
+    public function getField(): ?int
+    {
+        return $this->field;
+    }
+
+    public function getColnum(): ?int
+    {
+        return $this->colnum;
+    }
+
+    public function getValues(): ?string
+    {
+        return $this->values;
+    }
+
+    public function setValues(string $values): self
+    {
+        $this->values = $values;
+
+        return $this;
+    }
 
 
 }
