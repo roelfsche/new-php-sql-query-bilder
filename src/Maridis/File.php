@@ -12,7 +12,6 @@ use App\Maridis\File\VoyageReport;
 use Doctrine\Common\Persistence\ObjectManager;
 use ErrorException;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -155,7 +154,12 @@ abstract class File
     { //ObjectManager $objManager = NULL) {
         $objConnection = $this->objDoctrineManagerRegistry->getConnection($strConnection); //$objManager->getConnection();
         $objStmt = $objConnection->prepare($strQuery);
-        $objStmt->execute();
+        try {
+            $objStmt->execute();
+        } catch (Exception $obje) {
+            $this->objLogger->error('Error while writing to database: ');
+            $this->objLogger->error($obje->getMessage());
+        }
         return $objConnection->lastInsertId();
     }
 
@@ -169,7 +173,7 @@ abstract class File
     }
 
     /**
-     * 
+     *
      */
     public function setLastMeasurementData($intLatestTs, $strImoNumber = null, $strCdsSerialNumber = null, $strMarprimeSerialNumber = null)
     {
