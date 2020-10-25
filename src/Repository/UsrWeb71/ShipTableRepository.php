@@ -5,7 +5,7 @@ namespace App\Repository\UsrWeb71;
 use App\Entity\UsrWeb71\ShipTable;
 use App\Exception\MscException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method ShipTable|null find($id, $lockMode = null, $lockVersion = null)

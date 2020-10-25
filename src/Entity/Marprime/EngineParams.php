@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class EngineParams
 {
+
     /**
      * @var \DateTime
      *
