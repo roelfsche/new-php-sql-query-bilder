@@ -57,7 +57,12 @@ class Mpd extends File implements FileInterface
          * @var App\Repository\UsrWeb71\ShipTableRepository
          */
         $objShipRepository = $this->objDoctrineDefaultManager->getRepository(UsrWeb71ShipTable::class);
+        
         $this->objShip = $objShipRepository->findByMarprimeSerialNo($this->strMpdSerialNumber);
+        if (!$this->objShip) {
+            $this->objLogger->error("Could not find ship by Marprime-Serial-No.: " . $this->strMpdSerialNumber);
+            return;
+        }
 
         $this->objLogger->info("processing data for ship " . $this->objShip->getAktName());
 
