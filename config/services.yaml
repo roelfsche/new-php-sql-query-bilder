@@ -39,6 +39,10 @@ services:
     logger:
         alias: 'monolog.logger'
         public: true
+
+    maridis.mail.formatter:
+        # alias: 'maridis.mail.formater'
+        class: App\Maridis\Formatter\Mail
         
 
     # erstmal auskommentiert da es bei bin/console debug:autowiring sonst probleme gab

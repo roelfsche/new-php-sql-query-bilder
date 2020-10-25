@@ -18,7 +18,7 @@ monolog:
             subject:    'Logsammler'
             #subject:    'Logsammler-output! %%message%%'
             level:      debug
-            formatter:  monolog.formatter.html
+            formatter:  maridis.mail.formatter
             content_type: text/html
         main:
             type: rotating_file
