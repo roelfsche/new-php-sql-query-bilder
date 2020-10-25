@@ -10,9 +10,9 @@ use App\Maridis\File\Pdf;
 use App\Maridis\File\VoyageReport;
 // use App\Entity\UsrWeb71\ShipTable as ShipTable;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\DBAL\Exception\SyntaxErrorException;
 use ErrorException;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -143,8 +143,13 @@ abstract class File
         $objConnection = $this->objDoctrineManagerRegistry->getConnection($strConnection); //$objManager->getConnection();
         // echo $strQuery . "\n\n\n";
         $objStmt = $objConnection->prepare($strQuery);
-        $objStmt->execute();
-        return $objStmt;
+        try {
+            $objStmt->execute();
+            return $objStmt;
+        } catch (SyntaxErrorException $objSEE) {
+            $this->objLogger->warning("Error in SQL-Statement " . $objSEE->getMessage());
+        }
+        return null;
     }
 
     /**
@@ -169,7 +174,7 @@ abstract class File
     }
 
     /**
-     * 
+     *
      */
     public function setLastMeasurementData($intLatestTs, $strImoNumber = null, $strCdsSerialNumber = null, $strMarprimeSerialNumber = null)
     {
