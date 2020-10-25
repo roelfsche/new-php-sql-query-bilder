@@ -4,7 +4,7 @@ namespace App\Repository\UsrWeb71;
 
 use App\Entity\UsrWeb71\InterfaceErrorMails;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method InterfaceErrorMails|null find($id, $lockMode = null, $lockVersion = null)

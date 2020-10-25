@@ -13,6 +13,15 @@ use Doctrine\ORM\Mapping as ORM;
 class ProgramParams
 {
     /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="MarPrime_SerialNo", type="string", length=20, nullable=false, options={"default"="-1"})
@@ -194,6 +203,7 @@ class ProgramParams
      */
     private $status;
 
+<<<<<<< HEAD
     public function getMarprimeSerialno(): ?string
     {
         return $this->marprimeSerialno;
@@ -507,4 +517,6 @@ class ProgramParams
     }
 
 
+=======
+>>>>>>> Bugfixing doctrine / logsammler email-adr
 }
