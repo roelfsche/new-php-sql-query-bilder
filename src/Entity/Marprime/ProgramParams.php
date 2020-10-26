@@ -203,7 +203,6 @@ class ProgramParams
      */
     private $status;
 
-<<<<<<< HEAD
     public function getMarprimeSerialno(): ?string
     {
         return $this->marprimeSerialno;
@@ -515,8 +514,4 @@ class ProgramParams
 
         return $this;
     }
-
-
-=======
->>>>>>> Bugfixing doctrine / logsammler email-adr
 }
