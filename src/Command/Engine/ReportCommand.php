@@ -1,28 +1,20 @@
 <?php
 
 // src/Command/CreateUserCommand.php
-namespace App\Command;
+namespace App\Command\Engine;
 
-use App\Repository\UsrWeb71\ShipTableRepository;
-use Symfony\Component\Console\Command\Command;
+// use App\Repository\UsrWeb71\ShipTableRepository;
+// use Symfony\Component\Console\Command\Command;
+use App\Command\Engine\ReportCommand as EngineReportCommand;
+use App\Command\ReportCommand as MscReportCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class EngineReportCommand extends ReportCommand
+class ReportCommand extends MscReportCommand
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'msc:engine-report';
-
-    // public function __construct(ContainerInterface $container, LoggerInterface $appLogger, \Swift_Mailer $mailer)
-    // {
-    //     parent::__construct();
-    //     $this->objContainer = $container;
-    //     $this->objLogger = $appLogger;
-    //     $this->objSwiftMailer = $mailer;
-
-    //     $this->objPropertyAccess = PropertyAccess::createPropertyAccessor();
-    // }
 
     protected function configure()
     {
@@ -48,21 +40,43 @@ class EngineReportCommand extends ReportCommand
         ];
         // kopiere das Datum in ts, da in setTimeInterval() danach geschaut wird
         if ($this->objPropertyAccess->getValue($arrCommandlineParameters, '[from_date]')) {
-            $arrCommandlineParameters['from_ts'] = $arrCommandlineParameters['[from_date]'] . ' 00:00:00';
+            $arrCommandlineParameters['from_ts'] = $arrCommandlineParameters['from_date'] . ' 00:00:00';
         }
         $this->setTimeInterval($arrCommandlineParameters);
         $this->setHttpHost($arrCommandlineParameters);
 
         if ($arrCommandlineParameters['imo'])
         {
-            $objShipCollection = $this->objShipTableRepository->findByImoNumber($arrCommandlineParameters['imo']); //array(Model_Ship::byImo(Arr::get($params, 'imo')));
+            $arrShipCollection = $this->objShipTableRepository->findByImoNumber($arrCommandlineParameters['imo']); //array(Model_Ship::byImo(Arr::get($params, 'imo')));
         }
         else
         {
             // $objShipCollection = Model_Ship::getAllFromEngineParams($this->intFromTs, Arr::get($params, 'shipping_company', ''));
-            $objShipCollection = $this->objShipTableRepository->findByDateOrShippingCompany($this->intFromTs, $arrCommandlineParameters['shipping_company']);
+            $arrShipCollection = $this->objShipTableRepository->findByDateOrShippingCompany($this->intFromTs, $arrCommandlineParameters['shipping_company']);
+        }
+        if (!$arrShipCollection || !count($arrShipCollection)) {
+            return 0; // nichts zu tun
         }
 
+        foreach($arrShipCollection as $objShip) {
+            $this->logForShip($objShip, 'info', 'Erstelle Engine-Reports (:from_ts)', array(
+                ':from_ts' => date('Y-m-d H:i:s', $this->intFromTs),
+            ));
+
+             // erstelle den Report
+            // weil Probleme mit Speicher => eigener Prozess
+            $strCommand = strtr('nohup :interpreter :script --from_date=:strFromDate --ship_id=:ship_id :dryRun --http_host=:http_host &', array(
+                ':interpreter' => PHP_BINARY,
+                ':script' => $this->objContainer->get('kernel')->getProjectDir() . '/bin/console msc:engine-report-worker',
+                ':strFromDate' => date('Y-m-d', $this->intFromTs),
+                ':ship_id' => $objShip->getId(),
+                ':dryRun' => ($arrCommandlineParameters['dry_run'] === false) ? '' : '--dry_run=1',
+                ':http_host' => $arrCommandlineParameters['http_host']
+            ));
+            echo $strCommand . "\n";
+            
+        }
+        
 
         return 0;
     }
@@ -84,8 +98,8 @@ class EngineReportCommand extends ReportCommand
     protected function setTimeInterval($arrParams)
     {
         $this->strPeriod = $this->objPropertyAccess->getValue($arrParams, '[period]'); // default: monthly
-        $this->intFromTs = $this->objPropertyAccess->getValue($arrParams, '[from_ts]'); // default: 0
-        $this->intToTs = $this->objPropertyAccess->getValue($arrParams, '[to_ts]'); // default: 0
+        $this->intFromTs = strtotime($this->objPropertyAccess->getValue($arrParams, '[from_ts]')); // default: 0
+        $this->intToTs = strtotime($this->objPropertyAccess->getValue($arrParams, '[to_ts]')); // default: 0
         // $this->intFromTs = strtotime(Arr::get($arrParams, 'from_ts')); // int oder false
         // $this->intToTs = strtotime(Arr::get($arrParams, 'to_ts')); // int oder false
 

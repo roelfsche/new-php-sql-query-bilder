@@ -1489,5 +1489,12 @@ class ShipTable
         return $this;
     }
 
-
+    /**
+     * haben in der DB leider mal ein \n am Ende einiger nummern :-(
+     * @return string
+     */
+    public function getCleanMarprimeSerialNumber()
+    {
+        return preg_replace('/[^0-9\.]/', '', $this->getMarprimeSerialno());
+    }
 }

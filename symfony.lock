@@ -1,4 +1,7 @@
 {
+    "amenadiel/jpgraph": {
+        "version": "4.0.3"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -128,6 +131,9 @@
     },
     "psr/log": {
         "version": "1.1.2"
+    },
+    "qipsius/tcpdf-bundle": {
+        "version": "2.0.2"
     },
     "secit-pl/imap-bundle": {
         "version": "1.0",
@@ -526,6 +532,9 @@
     },
     "symfony/yaml": {
         "version": "v4.4.1"
+    },
+    "tecnickcom/tcpdf": {
+        "version": "6.3.5"
     },
     "twig/extra-bundle": {
         "version": "v3.0.0"

@@ -37,12 +37,9 @@ class InterfaceCommand extends Command
         $this->objLogger = $appLogger;
         $this->objSwiftMailer = $mailer;
 
-        // $this->objContainer = $this->getApplication()->getKernel()->getContainer();
         $this->objPropertyAccess = PropertyAccess::createPropertyAccessor();
-        // $this->objImap = $this->objContainer->get('secit.imap');
         $this->objImap = $this->objContainer->get('lumturo.imap');
         $this->objImap->setAttachmentPath(Attachment::tempdir(null, 'interface_attachment'));
-        // $this->objInterfaceAttachment = $objInterfaceAttachment;
     }
 
     protected function configure()

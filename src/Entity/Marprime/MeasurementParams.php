@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * MeasurementParams
  *
  * @ORM\Table(name="measurement_params")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Marprime\MeasurementParamsRepository")
  */
 class MeasurementParams
 {

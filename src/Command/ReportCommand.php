@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Qipsius\TCPDFBundle\Controller\TCPDFController;
 
 class ReportCommand extends Command
 {
@@ -24,7 +25,7 @@ class ReportCommand extends Command
 
     protected $objSwiftMailer = null;
 
-        /**
+    /**
      * @var Doctrine\Common\Persistence\ManagerRegistry
      */
     protected $objDoctrineManagerRegistry = null;
@@ -32,8 +33,7 @@ class ReportCommand extends Command
      * @var Doctrine\Commom\Persistance\ObjectManager
      */
     protected $objDoctrineDefaultManager = null;
-
-
+    protected $objTCPDFController = null;
 
     protected $objShipTableRepository = null;
 
@@ -41,7 +41,7 @@ class ReportCommand extends Command
     protected $intToTs = 0;
     protected $strPeriod = 'monthly';
 
-    public function __construct(ContainerInterface $container, LoggerInterface $appLogger, \Swift_Mailer $mailer)
+    public function __construct(ContainerInterface $container, LoggerInterface $appLogger, \Swift_Mailer $mailer, TCPDFController $tcpdf)
     {
         parent::__construct();
         $this->objContainer = $container;
@@ -50,7 +50,7 @@ class ReportCommand extends Command
         $this->objDoctrineManagerRegistry = $container->get('doctrine');
         $this->objDoctrineDefaultManager = $this->objDoctrineManagerRegistry->getManager();
         $this->objShipTableRepository = $this->objDoctrineDefaultManager->getRepository(UsrWeb71ShipTable::class);
-
+        $this->objTCPDFController = $tcpdf;
         $this->objPropertyAccess = PropertyAccess::createPropertyAccessor();
     }
 
@@ -66,7 +66,8 @@ class ReportCommand extends Command
             ->addOption('http_host', null, InputOption::VALUE_OPTIONAL, '', 'localhost');
     }
 
-    protected function initReport(InputInterface $input) {
+    protected function initReport(InputInterface $input)
+    {
         $arrCommandlineParameters = [
             'from_ts' => $input->getOption('from_ts'),
             'to_ts' => $input->getOption('to_ts'),
@@ -157,6 +158,17 @@ class ReportCommand extends Command
             }
         }
     }
+
+    protected function logForShip(UsrWeb71ShipTable $objShip, $strLevel, $strMessage, $arrValues = [])
+    {
+        $this->objLogger->{$strLevel}(strtr('IMO=:imo;name=:name : ' . $strMessage,
+            [
+                ':imo' => $objShip->getImoNo(),
+                ':name' => str_pad(substr($objShip->getAktName(), 0, 20), 20, ' ', STR_PAD_RIGHT),
+            ] + $arrValues
+        ));
+    }
+
     protected function setHttpHost($objParams)
     {
         $_SERVER['HTTP_HOST'] = $this->objPropertyAccess->getValue($objParams, '[http_host]'); // default: localhost
