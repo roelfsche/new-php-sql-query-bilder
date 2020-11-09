@@ -2,6 +2,7 @@
 
 namespace App\Entity\Marprime;
 
+use App\Entity\BaseEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,13 +11,17 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="engine_params")
  * @ORM\Entity(repositoryClass="App\Repository\Marprime\EngineParamsRepository")
  */
-class EngineParams
+class EngineParams extends BaseEntity
 {
-
     /**
-     * @var \DateTime
+     * Musste String draus machen, da er sonst Probleme beim Objekt-Erstellen hat
+     * siehe: https://github.com/doctrine/orm/issues/8323
+     * 
+     * @var string
+     * var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime", nullable=false)
+     * blaORM\Column(name="date", type="datetime", nullable=false)
+     * @ORM\Column(name="date", type="string", length=20, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -55,7 +60,7 @@ class EngineParams
     /**
      * @var bool
      *
-     * @ORM\Column(name="cyl_count", type="boolean", nullable=false)
+     * @ORM\Column(name="cyl_count", type="integer", nullable=false)
      */
     private $cylCount = '0';
 
@@ -69,7 +74,7 @@ class EngineParams
     /**
      * @var bool
      *
-     * @ORM\Column(name="strokes", type="boolean", nullable=false)
+     * @ORM\Column(name="strokes", type="integer", nullable=false)
      */
     private $strokes = '0';
 
@@ -210,12 +215,12 @@ class EngineParams
         return $this;
     }
 
-    public function getCylCount(): ?bool
+    public function getCylCount(): ?int
     {
         return $this->cylCount;
     }
 
-    public function setCylCount(bool $cylCount): self
+    public function setCylCount( $cylCount): self
     {
         $this->cylCount = $cylCount;
 
@@ -234,12 +239,12 @@ class EngineParams
         return $this;
     }
 
-    public function getStrokes(): ?bool
+    public function getStrokes(): ?int
     {
         return $this->strokes;
     }
 
-    public function setStrokes(bool $strokes): self
+    public function setStrokes(int $strokes): self
     {
         $this->strokes = $strokes;
 

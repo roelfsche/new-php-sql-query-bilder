@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Report
  *
  * @ORM\Table(name="report", indexes={@ORM\Index(name="ReportID", columns={"ReportID"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Marprime\ReportRepository")
  */
 class Report
 {

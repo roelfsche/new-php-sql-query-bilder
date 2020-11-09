@@ -61,6 +61,7 @@ class WorkerCommand extends ReportCommand
         $arrEngineResults = $this->objEngineParamsRepository->findByMarprimeNumber($objShip->getCleanMarprimeSerialNumber());
         foreach ($arrEngineResults as $arrEngineParams) {
             $objPdfReport = new Engine($this->objContainer, $objShip, $arrEngineParams, $intFromCreateTs);
+            $objPdfReport->create();
             // $objPdfReport = $this->objTCPDFController->create($this->objContainer, $objShip, $arrEngineParams, $intFromCreateTs);
 
         }

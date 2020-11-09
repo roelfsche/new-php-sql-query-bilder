@@ -13,10 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class MeasurementParams
 {
     /**
-     * 2 oder 4
-     */
-    private $strokes = 2;
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime", nullable=false)
@@ -160,17 +156,9 @@ class MeasurementParams
      */
     private $limitPower;
 
-    public function getStrokes(): ?int 
-    {
-        return $this->strokes;
-    }
-
-    public function setStrokes($intStrokes) {
-        $this->strokes = $intStrokes;
-    }
-
     public function getDate(): ?\DateTimeInterface
     {
+        // return $this->date->format('Y-m-d H:i:s');
         return $this->date;
     }
 

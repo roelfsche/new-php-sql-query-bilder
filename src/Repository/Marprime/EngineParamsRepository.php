@@ -3,6 +3,8 @@
 namespace App\Repository\Marprime;
 
 use App\Entity\Marprime\EngineParams;
+use App\Exception\MscException;
+use App\Kohana\Arr;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EngineParamsRepository extends ServiceEntityRepository
 {
+    private $arrParameterCache = [];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, EngineParams::class);
@@ -29,7 +33,7 @@ class EngineParamsRepository extends ServiceEntityRepository
      * @param $strMarprimeNumber
      * @return array - Result mit array's
      */
-    public function findByMarprimeNumber($strMarprimeNumber, $strHydrationMode = AbstractQuery::HYDRATE_ARRAY)
+    public function findByMarprimeNumber($strMarprimeNumber, $strHydrationMode = AbstractQuery::HYDRATE_OBJECT)
     {
         return $this->createQueryBuilder('a')
             ->select('a')
@@ -66,10 +70,6 @@ class EngineParamsRepository extends ServiceEntityRepository
             $arrParams[':name'] = $objEngineParams->engineName;
         }
 
-        // $objMpConn = $this->objManagerRegistry->getManager('marprime')
-            // ->getRepository(EngineParams::class)
-            // ->getEntityManager()
-            // ->getConnection();
         $objMpConn = $this->getEntityManager()
             ->getConnection();
 
@@ -80,52 +80,40 @@ class EngineParamsRepository extends ServiceEntityRepository
             $strDate = $arrResult[0]['date'];
         }
         return ($strDate) ? strtotime($strDate) : false;
-        // $objQuery = Db::select(array(
-        //     DB::expr('MAX(date)'),
-        //     'date',
-        // ))->from('engine_params')
-        //     ->where('MarPrime_SerialNo', '=', $strMarprimeNumber);
-
-        // if ($intLowerTs) {
-        //     $objQuery->where('create_ts', '>=', Db::expr('FROM_UNIXTIME(:ts)', array(':ts' => $intLowerTs))) // > 00:00:00
-        //         ->where('create_ts', '<', Db::expr('FROM_UNIXTIME(:ts)', array(':ts' => $intLowerTs + 86400))); // < nächsten Tag 00:00:00
-        // }
-
-        // if ($objEngineParams != null) {
-        //     $objQuery->where('engine_name', '=', $objEngineParams->engine_name);
-        // }
-
-        // $objResult = $objQuery->execute('marprime', true);
-        // $strDate = $objResult->offsetGet(0)->date; //NULL oder 2016-01-01 11:11:11
-
-        // return ($strDate) ? strtotime($strDate) : false;
     }
-    // /**
-    //  * @return EngineParams[] Returns an array of EngineParams objects
-    //  */
-    /*
-    public function findByExampleField($value)
+
+    public function retrieveDbValue($strSQL, $strSerialNumber = null, $strDate = null)
     {
-    return $this->createQueryBuilder('e')
-    ->andWhere('e.exampleField = :val')
-    ->setParameter('val', $value)
-    ->orderBy('e.id', 'ASC')
-    ->setMaxResults(10)
-    ->getQuery()
-    ->getResult()
-    ;
-    }
-     */
+        extract($this->findByCheckCacheParameter([
+            'strSerialNumber' => $strSerialNumber,
+            'strDate' => $strDate,
+        ]));
 
-    /*
-public function findOneBySomeField($value): ?EngineParams
-{
-return $this->createQueryBuilder('e')
-->andWhere('e.exampleField = :val')
-->setParameter('val', $value)
-->getQuery()
-->getOneOrNullResult()
-;
-}
- */
+        $objMpConn = $this->getEntityManager()
+            ->getConnection();
+
+        $objStatement = $objMpConn->prepare($strSQL);
+        $objStatement->execute([
+            ':mp_number' => $strSerialNumber,
+            ':date' => $strDate,
+        ]);
+        return $objStatement; //->fetchColumn(0);
+    }
+    /**
+     * speichere funktionsparameter zwischen, um sie nicht immer übergeben zu müssen
+     */
+    protected function findByCheckCacheParameter($arrParameter)
+    {
+        foreach ($arrParameter as $strKey => $mixedValue) {
+            if ($mixedValue === null) {
+                if (!Arr::get($this->arrParameterCache, $strKey)) {
+                    throw new MscException("Parameter nicht gesetzt $strKey");
+                }
+                $arrParameter[$strKey] = Arr::get($this->arrParameterCache, $strKey);
+            } else {
+                $this->arrParameterCache[$strKey] = $mixedValue;
+            }
+        }
+        return $arrParameter;
+    }
 }

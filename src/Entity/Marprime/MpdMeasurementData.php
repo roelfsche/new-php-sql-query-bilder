@@ -2,20 +2,30 @@
 
 namespace App\Entity\Marprime;
 
+use App\Entity\BaseEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * MpdMeasurementData
  *
  * @ORM\Table(name="mpd_measurement_data")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Marprime\MpdMeasurementDataRepository")
  */
-class MpdMeasurementData
+class MpdMeasurementData extends BaseEntity
 {
     /**
-     * @var \DateTime
+     * 2 oder 4
+     */
+    private $strokes = 2;
+    /**
+     * Musste String draus machen, da er sonst Probleme beim Objekt-Erstellen hat
+     * siehe: https://github.com/doctrine/orm/issues/8323
+     * 
+     * @var string
+     * var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime", nullable=false)
+     * blaORM\Column(name="date", type="datetime", nullable=false)
+     * @ORM\Column(name="date", type="string", length=20, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -300,8 +310,24 @@ class MpdMeasurementData
      */
     private $cappa;
 
-    public function getDate(): ?\DateTimeInterface
+    public function getStrokes(): ?int
     {
+        return $this->strokes;
+    }
+
+    public function setStrokes($intStrokes)
+    {
+        $this->strokes = $intStrokes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDate($strFormat = null) //: ?\DateTimeInterface|string
+    {
+        if ($strFormat) {
+            return date($strFormat, strtotime($this->date));
+        }
         return $this->date;
     }
 
@@ -320,8 +346,15 @@ class MpdMeasurementData
         return $this->marprimeSerialno;
     }
 
-    public function getMeasurementtime(): ?\DateTimeInterface
+    /**
+     * @return string | DateTimeInterface
+     */
+    public function getMeasurementtime($strFormat = null) //: ?\DateTimeInterface
+
     {
+        if ($strFormat) {
+            return $this->measurementtime->format($strFormat);
+        }
         return $this->measurementtime;
     }
 
@@ -452,8 +485,14 @@ class MpdMeasurementData
         return $this;
     }
 
-    public function getRevolution(): ?float
+    /**
+     * @return float | string
+     */
+    public function getRevolution($intPlaces = -1)//: ?float
     {
+        if ($intPlaces != -1) {
+            return number_format($this->revolution, $intPlaces);
+        }
         return $this->revolution;
     }
 
@@ -464,8 +503,14 @@ class MpdMeasurementData
         return $this;
     }
 
-    public function getIndPower(): ?float
+    /**
+     * @return float | string
+     */
+    public function getIndPower($intPlaces = -1)//: ?float
     {
+        if ($intPlaces != -1) {
+            return number_format($this->indPower, $intPlaces);
+        }
         return $this->indPower;
     }
 
@@ -512,8 +557,11 @@ class MpdMeasurementData
         return $this;
     }
 
-    public function getApmax(): ?float
+    public function getApmax($intPlaces = -1): ?float
     {
+        if ($intPlaces != -1) {
+            return number_format($this->apmax, $intPlaces);
+        }
         return $this->apmax;
     }
 
@@ -750,6 +798,33 @@ class MpdMeasurementData
         $this->cappa = $cappa;
 
         return $this;
+    }
+
+    public function getCompPressure() {
+        return $this->p0 * 10;
+    }
+
+    public function getMaxPressure() {
+        return $this->pmax * 10;
+    }
+
+    public function getPcompRelPscav() {
+        return ($this->p0 + 0.1) / ($this->scavAir + 0.1);
+    }
+
+    public function getMeanIndPressure() {
+        return $this->pim * 10.0 * $this->strokes / 2;
+    }
+
+    public function getLeakage() {
+        if ($this->aev * 100 < 5) {
+            return 5.0;
+        }
+        return $this->aev * 100;
+    }
+
+    public function getPmaxPcomp() {
+        return ($this->pmax - $this->p0) * 10;
     }
 
 

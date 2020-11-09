@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * MpdAeCurveData
  *
  * @ORM\Table(name="mpd_ae_curve_data")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Marprime\MpdAeCurveDataRepository")
  */
 class MpdAeCurveData
 {

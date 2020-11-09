@@ -2,6 +2,7 @@
 
 namespace App\Entity\UsrWeb71;
 
+use App\Entity\BaseEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="ship_table", uniqueConstraints={@ORM\UniqueConstraint(name="id_2", columns={"id"})}, indexes={@ORM\Index(name="id", columns={"id"})})
  * @ORM\Entity(repositoryClass="App\Repository\UsrWeb71\ShipTableRepository")
  */
-class ShipTable
+class ShipTable extends BaseEntity
 {
     /**
      * @var int
