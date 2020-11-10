@@ -39,6 +39,8 @@ class BaseEntity
         switch ($strField) {
             case 'marprime_serial_number':
                 return $this->getMarprimeSerialno();
+            case 'imo_number':
+                return $this->getImoNo();
             default:
                 $strGetter = 'get' . $this->toCamelCase($strField, true);
                 if (method_exists($this, $strGetter)) {

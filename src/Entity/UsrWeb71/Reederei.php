@@ -2,6 +2,7 @@
 
 namespace App\Entity\UsrWeb71;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -71,11 +72,20 @@ class Reederei
     private $companyCity;
 
     /**
+     * @OneToMany(targetEntity="ShipTable", mappedBy="reederei")
+     */
+    private $ships;
+    /**
      * @var string
      *
      * @ORM\Column(name="logo_unified", type="string", length=254, nullable=false)
      */
     private $logoUnified;
+
+    public function __construct()
+    {
+        $this->ships = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -177,6 +187,5 @@ class Reederei
 
         return $this;
     }
-
 
 }

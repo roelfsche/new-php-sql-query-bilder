@@ -488,12 +488,467 @@ parameters:
                 color : 
                     # neu: nehme nur noch rgb und rechne um
                     # siehe decodeHexColor(
-                    red : #f05500
-                    dark_red : #ef0000 # min-max-Linie beim Pressure-diagram
-                    yellow : #ffce36
-                    green : #b4d524
-        
-                        
+                    red : \#f05500
+                    dark_red : \#ef0000 # min-max-Linie beim Pressure-diagram
+                    yellow : \#ffce36
+                    green : \#b4d524
+            monthly_performance: 
+                page: 
+                    margins: 
+                        # mm
+                        header: 5
+                        content: 
+                            left: 15
+                            top: 35
+                            right: 15
+                        footer: 10
+                header: 
+                table: 
+                    # allgemeine Tabellen-Parameter
+                    margin_top: 0 # in mm
+                    margin_bottom: 8
+                    # config für die Kopfzeile
+                    header_cell: 
+                        # Parameter für TCPDF->Cell
+                        # w wenn 0 wird automatisch berechnet
+                        w: 0
+                        # wenn 0 dann wird automatisch berechnet
+                        h: 0
+                        # der wird natürlich durch Algo übergeben
+                        txt: 
+                        border: 'TB'
+                        align: 'C'
+                        # TRUE damit die fill_color unten zieht
+                        fill: TRUE
+                        ln: 0
+                        x: 
+                        y: 
+                        reseth: TRUE
+                        stretch: 0
+                        ishtml: FALSE
+                        autopadding: TRUE
+                        maxh: 0
+                        valign: 'M'
+                        # muss TRUE weil sonst valign nicht greift
+                        fitcell: TRUE
+
+                        # Hintergrundfarbe
+                        fill_color_red: 255
+                        fill_color_green: 255
+                        fill_color_blue: 255
+
+                        text_color_red: 128
+                        text_color_green: 128
+                        text_color_blue: 128
+
+                        # Linienfarbe
+                        draw_color_red: 0
+                        draw_color_green: 0
+                        draw_color_blue: 0
+
+                        # padding
+                        padding_left: 1.0
+                        padding_top: 1.0
+                        padding_right: 1.0
+                        padding_bottom: 3.0
+
+                        # eher für Überschriften
+                        margin_top: 0 # in mm
+                        margin_bottom: 0
+
+                        line_width: 0.3
+
+                        # Parameter für SetFont
+                        font_family: 'helvetica'
+                        # B BI I 
+                        font_style: 'B'
+                        font_size: 8
+                    cell: 
+                        # Parameter für TCPDF->MultiCell
+                        # siehe first_column_cell[h]
+                        h: 0
+                        # der wird natürlich durch Algo übergeben
+                        txt: 
+                        border: 0
+                        # L C R J -> Blocksatz
+                        align: 'C'
+                        # TRUE damit die fill_color unten zieht
+                        fill: TRUE
+                        ln: 0
+                        x: 
+                        y: 
+                        reseth: TRUE
+                        stretch: 0
+                        ishtml: FALSE
+                        autopadding: TRUE
+                        maxh: 0
+                        valign: 'M'
+                        # muss TRUE weil sonst valign nicht greift
+                        fitcell: TRUE
+
+                        # Hintergrundfarbe
+                        fill_color_red: 255
+                        fill_color_green: 255
+                        fill_color_blue: 255
+
+                        text_color_red: 0
+                        text_color_green: 0
+                        text_color_blue: 0
+
+                        # Linienfarbe
+                        draw_color_red: 80
+                        draw_color_green: 90
+                        draw_color_blue: 106
+
+                        # padding
+                        padding_left: 1.0
+                        padding_top: 3.0
+                        padding_right: 1.0
+                        padding_bottom: 3.0
+
+                        # eher für Überschriften
+                        margin_top: 0 # in mm
+                        margin_bottom: 0
+
+                        line_width: 0
+
+                        # Parameter für SetFont
+                        font_family: 'helvetica'
+                        # B BI I 
+                        font_style: 
+                        font_size: 8
+                    
+                    odd_cell: 
+                        border: 1
+                        # TRUE damit die fill_color unten zieht
+                        fill: TRUE
+
+                        # Linienfarbe
+                        draw_color_red: 192
+                        draw_color_green: 192
+                        draw_color_blue: 192
+
+                        line_width: 0.3
+                        # Hintergrundfarbe
+                        fill_color_red: 192
+                        fill_color_green: 192
+                        fill_color_blue: 192
+                    
+                    even_cell: 
+                        # TRUE damit die fill_color unten zieht
+                        fill: TRUE
+
+                        # Hintergrundfarbe
+                        fill_color_red: 255
+                        fill_color_green: 255
+                        fill_color_blue: 255
+                    
+                    footer_cell: 
+                        border: 'TB'
+                        # TRUE damit die fill_color unten zieht
+                        fill: TRUE
+
+                        # Linienfarbe
+                        draw_color_red: 0
+                        draw_color_green: 0
+                        draw_color_blue: 0
+
+                        line_width: 0.2
+                        # Hintergrundfarbe
+                        fill_color_red: 240
+                        fill_color_green: 240
+                        fill_color_blue: 240
+
+                        font_style: 'B'
+                    
+                    footer_label_cell: 
+                        text_color_red: 128
+                        text_color_green: 128
+                        text_color_blue: 128
+                    
+                    last_footer_cell: 
+                        border: 'B'
+                        # TRUE damit die fill_color unten zieht
+                        fill: TRUE
+                        line_width: 0.3
+                        # Hintergrundfarbe
+                        fill_color_red: 240
+                        fill_color_green: 240
+                        fill_color_blue: 240
+                        font_style: 'B'
+                h1: 
+                    # Parameter für TCPDF->MultiCell
+                    w: 0 # gesamte Breite
+                    h: 0
+                    # der wird natürlich durch Algo übergeben
+                    txt: 
+                    border: 0
+                    align: 'L'
+                    # TRUE damit die fill_color unten zieht
+                    fill: TRUE
+                    ln: 1
+                    x: 
+                    y: 
+                    reseth: TRUE
+                    stretch: 0
+                    ishtml: FALSE
+                    autopadding: FALSE
+                    maxh: 0
+                    valign: 'M'
+                    # muss TRUE weil sonst valign nicht greift
+                    fitcell: TRUE
+
+                    # Paddings (eher für Tabellenzellen
+                    padding_left: 0.0
+                    padding_top: 0.0
+                    padding_right: 0.0
+                    padding_bottom: 0.0
+
+                    # eher für Überschriften
+                    margin_top: 0 # in mm
+                    margin_bottom: 5
+
+                    # Hintergrundfarbe
+                    fill_color_red: 0
+                    fill_color_green: 0
+                    fill_color_blue: 0
+
+                    text_color_red: 0
+                    text_color_green: 0
+                    text_color_blue: 0
+
+                    # Linienfarbe
+                    draw_color_red: 0
+                    draw_color_green: 0
+                    draw_color_blue: 0
+
+                    line_width: 0.2
+
+                    # Parameter für SetFont
+                    font_family: 'helvetica'
+                    # B BI I 
+                    font_style: 
+                    font_size: 24
+                h2: 
+                    # Parameter für TCPDF->MultiCell
+                    w: 0 # gesamte Breite
+                    h: 0
+                    # der wird natürlich durch Algo übergeben
+                    txt: 
+                    border: 0
+                    align: 'L'
+                    # TRUE damit die fill_color unten zieht
+                    fill: TRUE
+                    ln: 1
+                    x: 
+                    y: 
+                    reseth: TRUE
+                    stretch: 0
+                    ishtml: FALSE
+                    autopadding: FALSE
+                    maxh: 0
+                    valign: 'M'
+                    # muss TRUE weil sonst valign nicht greift
+                    fitcell: TRUE
+
+                    # Paddings
+                    padding_left: 0.0
+                    padding_top: 0.0
+                    padding_right: 0.0
+                    padding_bottom: 0.0
+
+                    # eher für Überschriften
+                    margin_top: 0 # in mm
+                    margin_bottom: 3
+
+                    # Hintergrundfarbe
+                    fill_color_red: 255
+                    fill_color_green: 255
+                    fill_color_blue: 255
+
+                    text_color_red: 0
+                    text_color_green: 0
+                    text_color_blue: 0
+
+                    # Linienfarbe
+                    draw_color_red: 0
+                    draw_color_green: 0
+                    draw_color_blue: 0
+
+                    line_width: 0
+
+                    # Parameter für SetFont
+                    font_family: 'helvetica'
+                    # B BI I  U und alle Kombinationen
+                    font_style: 'B'
+                    font_size: 12
+                h3: 
+                    # Parameter für TCPDF->MultiCell
+                    w: 0 # gesamte Breite
+                    h: 0
+                    # der wird natürlich durch Algo übergeben
+                    txt: 
+                    border: 0
+                    align: 'L'
+                    # TRUE damit die fill_color unten zieht
+                    fill: TRUE
+                    ln: 1
+                    x: 
+                    y: 
+                    reseth: TRUE
+                    stretch: 0
+                    ishtml: FALSE
+                    autopadding: FALSE
+                    maxh: 0
+                    valign: 'M'
+                    # muss TRUE weil sonst valign nicht greift
+                    fitcell: TRUE
+
+                    # Paddings
+                    padding_left: 0.0
+                    padding_top: 0.0
+                    padding_right: 0.0
+                    padding_bottom: 0.0
+
+                    # eher für Überschriften
+                    margin_top: 0 # in mm
+                    margin_bottom: 3
+
+                    # Hintergrundfarbe
+                    fill_color_red: 255
+                    fill_color_green: 255
+                    fill_color_blue: 255
+
+                    text_color_red: 0
+                    text_color_green: 0
+                    text_color_blue: 0
+
+                    # Linienfarbe
+                    draw_color_red: 0
+                    draw_color_green: 0
+                    draw_color_blue: 0
+
+                    line_width: 0
+
+                    # Parameter für SetFont
+                    font_family: 'freesans'
+                    # B BI I  U und alle Kombinationen
+                    font_style: 
+                    font_size: 10
+                text: 
+                    # Parameter für TCPDF->MultiCell
+                    w: 0 # gesamte Breite
+                    h: 0
+                    # der wird natürlich durch Algo übergeben
+                    txt: 
+                    border: 0
+                    align: 'L'
+                    # TRUE damit die fill_color unten zieht
+                    fill: TRUE
+                    ln: 1
+                    x: 
+                    y: 
+                    reseth: TRUE
+                    stretch: 0
+                    ishtml: FALSE
+                    autopadding: FALSE
+                    maxh: 0
+                    valign: 'M'
+                    # muss TRUE weil sonst valign nicht greift
+                    fitcell: TRUE
+
+                    # Paddings
+                    padding_left: 0.0
+                    padding_top: 0.0
+                    padding_right: 0.0
+                    padding_bottom: 0.0
+
+                    # eher für Überschriften
+                    margin_top: 0 # in mm
+                    margin_bottom: 5
+
+                    # Hintergrundfarbe
+                    fill_color_red: 255
+                    fill_color_green: 255
+                    fill_color_blue: 255
+
+                    text_color_red: 0
+                    text_color_green: 0
+                    text_color_blue: 0
+
+                    # Linienfarbe
+                    draw_color_red: 0
+                    draw_color_green: 0
+                    draw_color_blue: 0
+
+                    line_width: 0.2
+
+                    # Parameter für SetFont
+                    font_family: 'freesans'
+                    # B BI I  U und alle Kombinationen
+                    font_style: 
+                    font_size: 12
+                table_caption: 
+                    # Parameter für TCPDF->MultiCell
+                    w: 0 # gesamte Breite
+                    h: 0
+                    # der wird natürlich durch Algo übergeben
+                    txt: 
+                    border: 0
+                    align: 'L'
+                    # TRUE damit die fill_color unten zieht
+                    fill: TRUE
+                    ln: 1
+                    x: 
+                    y: 
+                    reseth: TRUE
+                    stretch: 0
+                    ishtml: FALSE
+                    autopadding: FALSE
+                    maxh: 0
+                    valign: 'M'
+                    # muss TRUE weil sonst valign nicht greift
+                    fitcell: TRUE
+
+                    # Paddings
+                    padding_left: 0.0
+                    padding_top: 0.0
+                    padding_right: 0.0
+                    padding_bottom: 0.0
+
+                    # eher für Überschriften
+                    margin_top: 0 # in mm
+                    margin_bottom: 5
+
+                    # Hintergrundfarbe
+                    fill_color_red: 255
+                    fill_color_green: 255
+                    fill_color_blue: 255
+
+                    text_color_red: 128
+                    text_color_green: 128
+                    text_color_blue: 128
+
+                    # Linienfarbe
+                    draw_color_red: 0
+                    draw_color_green: 0
+                    draw_color_blue: 0
+
+                    line_width: 0.2
+
+                    # Parameter für SetFont
+                    font_family: 'freesans'
+                    # B BI I  U und alle Kombinationen
+                    font_style: 
+                    font_size: 8
+                
+                border_bottom: 
+                    border: 'B'
+                    line_width: 0.3
+                    draw_color_red: 0
+                    draw_color_green: 0
+                    draw_color_blue: 0
+                footer: 
 services:
     # default configuration for services in *this* file
     _defaults:

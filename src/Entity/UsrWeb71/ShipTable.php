@@ -68,6 +68,8 @@ class ShipTable extends BaseEntity
      * @var string
      *
      * @ORM\Column(name="reederei", type="text", length=65535, nullable=false)
+     * @ManyToOne(targetEntity="Reederei", inversedBy="ships")
+     * @JoinColumn(name="reederei", referencedColumnName="name")
      */
     private $reederei;
 
@@ -638,7 +640,7 @@ class ShipTable extends BaseEntity
         return $this;
     }
 
-    public function getReederei(): ?string
+    public function getReederei()//: ?string
     {
         return $this->reederei;
     }
@@ -943,7 +945,7 @@ class ShipTable extends BaseEntity
         return $this->specPic;
     }
 
-    public function setSpecPic( $specPic): self
+    public function setSpecPic($specPic): self
     {
         $this->specPic = $specPic;
 
@@ -979,7 +981,7 @@ class ShipTable extends BaseEntity
         return $this->gl;
     }
 
-    public function setGl( $gl): self
+    public function setGl($gl): self
     {
         $this->gl = $gl;
 
@@ -1047,6 +1049,7 @@ class ShipTable extends BaseEntity
     }
 
     public function getPraThermalLoadAlarm(): ?int//bool
+
     {
         return $this->praThermalLoadAlarm;
     }
@@ -1059,6 +1062,7 @@ class ShipTable extends BaseEntity
     }
 
     public function getPraThermalLoadCritical(): ?int//bool
+
     {
         return $this->praThermalLoadCritical;
     }
@@ -1498,4 +1502,9 @@ class ShipTable extends BaseEntity
     {
         return preg_replace('/[^0-9\.]/', '', $this->getMarprimeSerialno());
     }
+
+    // public function getShippingCompany()
+    // {
+    //     return;
+    // }
 }

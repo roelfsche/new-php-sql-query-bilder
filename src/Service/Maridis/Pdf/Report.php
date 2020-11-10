@@ -15,18 +15,35 @@ class Report extends TCPDF
      */
     protected $arrReportConfig = null;
     /**
-     * pdf-config für den REport-Typ (gemerged)
+     * pdf-config für den Report-Typ (gemerged)
      * @var array
      */
     protected $arrConfig = null;
 
     protected $objContainer = null;
+
+    /**
+     * hier wird der zuletzt gesetzte Tabellenkopf gemerkt, damit er bei Bedarf automatisch
+     * gedruckt werden kann (wenn Tabelle über mehrere Seiten geht)
+     *
+     * @var array
+     */
+    private $arrTableHead = null;
+    /**
+     * speichert die aus dem Tabellenkopf errechnete Breite für die Spalten
+     *
+     * @var array
+     */
+    private $arrTableWidth = null;
+
+    private $objTmpPdf = null;
+
     /**
      *
      */
-    public function __construct(ContainerInterface $objContainer)
+    public function __construct(ContainerInterface $objContainer, $orientation = 'L', $unit = 'mm', $format = 'A4', $unicode = TRUE, $encoding = 'UTF-8', $diskcache = FALSE, $pdfa = FALSE )
     {
-        parent::__construct();
+        parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
         $this->objContainer = $objContainer;
 
@@ -374,6 +391,23 @@ class Report extends TCPDF
         }
         return $arrConfig;
     }
+    /**
+     * @param array $arrConfigPathStrings - array('report.default.table.default_cell', 'report.default.table.border_bottom', ....)
+     * @return array
+     */
+    public function compileConfigs($arrConfigPathStrings)
+    {
+        $arrRet = null;
+        foreach ($arrConfigPathStrings as $strPath) {
+            if (!$arrRet) {
+                $arrRet = Arr::path($this->arrConfig, $strPath);//Kohana::$config->load($strPath);
+                continue;
+            }
+
+            $arrRet = Arr::merge($arrRet, Arr::path($this->arrConfig, $strPath));//Kohana::$config->load($strPath));
+        }
+        return $arrRet;
+    }
 
     /**
      *
@@ -401,9 +435,10 @@ class Report extends TCPDF
         $arrConfig['ln'] = 1; // muss 1 sein, sonst wird als Höhe hinterher die gleiche wie vorher geliefert
         //        $pdf = new Report_Pdf(Jelly::factory('Row_Ship'), Jelly::factory('User'));//TCPDF();
         if (!$this->objTmpPdf) {
-            $objPdfController = $this->objContainer->get('qipsius.tcpdf');
+            // $objPdfController = $this->objContainer->get('qipsius.tcpdf');
 
-            $this->objTmpPdf = $pdf = $objPdfController->create();//new Report_Pdf();
+            // $this->objTmpPdf = $pdf = $objPdfController->create(); //new Report_Pdf();
+            $this->objTmpPdf = $pdf = new self($this->objContainer);
         } else {
             $pdf = $this->objTmpPdf;
         }

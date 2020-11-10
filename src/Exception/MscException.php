@@ -8,7 +8,8 @@ class MscException extends Exception
     public function __construct($strMessage, $arrParameters = null)
     {
         if ($arrParameters) {
-            parent::__construct(strtr($strMessage, $arrParameters));
+            $strMessage = strtr($strMessage, $arrParameters);
         }
+        parent::__construct($strMessage);
     }
 }

@@ -27,11 +27,6 @@ class Engine extends Report
     private $objEngineParams = null;
 
     /**
-     * @var Jelly_Collection von Model_Row_Mpd_History
-     */
-    public $objHistoryCollection = null;
-
-    /**
      * bei der Berechnung der Werte errechne ich auch ein paar neue, die hängen dann hier mit drinne
      * bspw. 'rel_speed'
      * @var array
@@ -807,4 +802,8 @@ value you entered and measure again.',
         ));
     }
 
+    public function calculateLeakageData()
+    {
+        return $this->objMpdMeasurementDataRepository->calculateLeakageData();
+    }
 }

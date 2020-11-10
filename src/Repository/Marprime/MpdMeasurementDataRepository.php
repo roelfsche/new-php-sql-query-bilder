@@ -167,6 +167,17 @@ class MpdMeasurementDataRepository extends ServiceEntityRepository
         return $this->retrieveDbValue('SELECT measurement_num, aev FROM mpd_measurement_data WHERE cyl_no = 0  AND  MarPrime_SerialNo = :mp_number AND date = :date AND aev > 0.4', $strSerialNumber, $strDate);
     }
 
+    /**
+     * Errechnet die Werte für die Leakage-Wahrscheinlichkeit
+     * 
+     * return array
+     */
+    public function calculateLeakageData($strSerialNumber = null, $strDate = null) {
+        
+        // errechne den Wert wie in marprime_barcharts_view Z205 ff.
+        return $this->retrieveDbValue('SELECT CASE WHEN aev*100 < 5 THEN 5.0 ELSE aev*100 END AS value, measurement_num as cyl_no FROM mpd_measurement_data WHERE MarPrime_SerialNo = :mp_number AND date = :date AND cyl_no = 0', $strSerialNumber, $strDate);
+    }
+
     public function retrieveDbValue($strSQL, $strSerialNumber = null, $strDate = null)
     {
         extract($this->findByCheckCacheParameter([
