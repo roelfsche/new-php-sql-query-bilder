@@ -6,6 +6,9 @@ use App\Exception\MscException;
 use App\Kohana\Arr;
 use Psr\Container\ContainerInterface;
 use TCPDF;
+use RandomLib\Factory;
+use RandomLib\Generator;
+use App\Entity\UsrWeb71\GeneratedReports;
 
 class Report extends TCPDF
 {
@@ -499,6 +502,34 @@ class Report extends TCPDF
     private function getConfigValue($strPath, $mixedDefault = false)
     {
         return Arr::path($this->arrConfig, $strPath, $mixedDefault);
+    }
+
+    public function save(GeneratedReports $objDbReport)
+    {
+        $strDestPath = $this->arrReportConfig['path'];
+
+        if (strlen($objDbReport->getFilename()) && is_file($strDestPath . $objDbReport->getFilename())) {
+            unlink($strDestPath . $objDbReport->getFilename());
+        }
+
+        // Random-String generieren
+        $objFactory = new Factory();
+        $objGenerator = $objFactory->getLowStrengthGenerator();
+
+        // suche einen neuen namen
+        do {
+            $strRand = $objGenerator->generateString(32, Generator::CHAR_ALPHA) . '.pdf';
+            $strPathSuffix = substr($strRand, 0, 2);
+            if (!(is_dir($strDestPath . $strPathSuffix))) {
+                mkdir($strDestPath . $strPathSuffix, 0777, true);
+            }
+
+            $strDestFilename = $strPathSuffix . DIRECTORY_SEPARATOR . $strRand;
+        } while (file_exists($strDestPath . $strDestFilename));
+
+        $this->Output($strDestPath . $strDestFilename, 'F');
+
+        $objDbReport->setFilename($strDestFilename);
     }
 
 }

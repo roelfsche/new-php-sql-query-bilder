@@ -3,15 +3,17 @@
 namespace App\Entity\UsrWeb71;
 
 use App\Exception\MscException;
+use App\Service\Maridis\Pdf\Report;
 use Doctrine\ORM\Mapping as ORM;
 use RandomLib\Factory;
 use RandomLib\Generator;
+use TCPDF;
 
 /**
  * GeneratedReports
  *
  * @ORM\Table(name="generated_reports", indexes={@ORM\Index(name="fleet_hash", columns={"fleet_hash"}), @ORM\Index(name="ship_id", columns={"ship_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UsrWeb71\GeneratedReportRepository")
  */
 class GeneratedReports
 {
@@ -270,5 +272,4 @@ class GeneratedReports
 
         $this->setFilename($strDestFilename);
     }
-
 }

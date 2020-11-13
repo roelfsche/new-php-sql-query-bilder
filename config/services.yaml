@@ -17,7 +17,7 @@ parameters:
             init_vector: "kASD-vfäa3bP9§"
     reports: # alles zu den PDF-Reports
         # DOCROOT-relativer Pfad, unter dem die generierten PDF-Dokumente abgelegt werden
-        path: "reports/"
+        path: "%kernel.project_dir%/reports/"
         paths:
             flag:
                 upload: "%kernel.project_dir%/upload/flags/"
@@ -970,6 +970,13 @@ services:
         resource: "../src/Controller"
         tags: ["controller.service_arguments"]
 
+    App\Command\:
+        resource: "../src/Command"
+        arguments: 
+            - "@service_container"
+            - "@logger"
+        tags: 
+            - { name: "monolog.logger", channel: command }
     # the `qipsius.tcpdf` service will be injected when a
     # `Qipsius\TCPDFBundle\Controller\TCPDFController` type-hint is detected
     Qipsius\TCPDFBundle\Controller\TCPDFController: "@qipsius.tcpdf"

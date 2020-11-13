@@ -4,6 +4,8 @@ namespace App\Command\Engine;
 
 use App\Command\ReportCommand;
 use App\Entity\Marprime\EngineParams;
+use App\Entity\UsrWeb71\GeneratedReports;
+use App\Repository\UsrWeb71\GeneratedReportRepository;
 use App\Service\Maridis\Pdf\Report\Engine;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -11,7 +13,6 @@ use Qipsius\TCPDFBundle\Controller\TCPDFController;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class WorkerCommand extends ReportCommand
 {
@@ -25,6 +26,12 @@ class WorkerCommand extends ReportCommand
      */
     protected $objEngineParamsRepository = null;
 
+    /**
+     * @var GeneratedReportRepository
+     *
+     */
+    protected $objGeneratedReportRepository = null;
+
     public function __construct(ContainerInterface $container, LoggerInterface $appLogger, \Swift_Mailer $mailer, TCPDFController $tcpdf)
     {
         parent::__construct($container, $appLogger, $mailer, $tcpdf);
@@ -32,7 +39,9 @@ class WorkerCommand extends ReportCommand
             ->getManager('marprime')
             ->getRepository(EngineParams::class);
 
-            // $this->objTCPDFController->setClassName('App\Service\Maridis\Pdf\Report\Engine');
+        $this->objGeneratedReportRepository = $this->objDoctrineManagerRegistry
+            ->getManager()
+            ->getRepository(GeneratedReports::class);
 
     }
 
@@ -47,6 +56,7 @@ class WorkerCommand extends ReportCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $em = $this->objDoctrineManagerRegistry->getManager('default');
         $arrCommandlineParameters = [
             'from_date' => $input->getOption('from_date'),
             'ship_id' => $input->getOption('ship_id'),
@@ -59,12 +69,45 @@ class WorkerCommand extends ReportCommand
         $intFromCreateTs = strtotime($arrCommandlineParameters['from_date']);
 
         $arrEngineResults = $this->objEngineParamsRepository->findByMarprimeNumber($objShip->getCleanMarprimeSerialNumber());
-        foreach ($arrEngineResults as $arrEngineParams) {
-            $objPdfReport = new Engine($this->objContainer, $objShip, $arrEngineParams, $intFromCreateTs);
-            $objPdfReport->create();
-            $objPdfReport->output('/tmp/report.pdf', 'F');
-            // $objPdfReport = $this->objTCPDFController->create($this->objContainer, $objShip, $arrEngineParams, $intFromCreateTs);
+        /** @var $objEngineParams EngineParams */
+        foreach ($arrEngineResults as $objEngineParams) {
+            /** @var GeneratedReport $objDbReport */
+            $objDbReport = $this->objGeneratedReportRepository->findByShipAndEngineParams($objShip, $objEngineParams, $intFromCreateTs);
 
+            if ($objDbReport) {
+                $this->logForShip($objShip, 'info', 'WORKER: Engine-Report für die Maschine :engine_type bereits am :date erstellt.', array(
+                    ':engine_type' => $objEngineParams->getEngineType(),
+                    ':date' => date('d.m.Y H:i:s', $objDbReport->create_ts),
+                ));
+                if ($this->objContainer->get('kernel')->getEnvironment() == 'prod') {
+                    continue;
+                }
+            }
+
+            $objDbReport = new GeneratedReports();
+            $objDbReport->setShipId($objShip->getId());
+            $objDbReport->setType('engine-' . $objEngineParams->getEngineName() . '_' . $objEngineParams->getEngineType());
+            $objDbReport->setPeriod(date('Y-m-d', $intFromCreateTs));
+            $objDbReport->setFromTs($intFromCreateTs);
+            $objDbReport->setFilename('');
+            $objDbReport->setModifyTs(0);
+            $objDbReport->setCreateTs(time());
+
+            $objPdfReport = new Engine($this->objContainer, $objShip, $objEngineParams, $intFromCreateTs);
+            $objPdfReport->create();
+
+            $objDbReport->setToTs($objPdfReport->objModel->intDateTs);
+            if ($arrCommandlineParameters['dry_run'] === false) {
+                $objPdfReport->save($objDbReport);
+            }
+            $em->persist($objDbReport);
+            $em->flush();
+
+            $this->logForShip($objShip, 'info', 'WORKER: :dryRun Engine-Report für die Maschine :engine_type zum Datum :date erstellt.', array(
+                ':dryRun' => ($arrCommandlineParameters['dry_run']) ? '[dry-run]:' : '',
+                ':engine_type' => $objEngineParams->getEngineType(),
+                ':date' => date('Y-m-d H:i:s', $objDbReport->getToTs()),
+            ));
         }
 
         return 0;

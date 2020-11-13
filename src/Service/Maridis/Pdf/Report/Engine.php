@@ -27,9 +27,8 @@ class Engine extends Report
     /**
      * @var $objModel App\Service\Maridis\Model\Report
      */
-    protected $objModel = null;
+    public $objModel = null;
 
-    
     public function __construct(ContainerInterface $objContainer, ShipTable $objShip, $objEngineParams, $intCreateTs)
     {
         parent::__construct($objContainer);
@@ -42,7 +41,7 @@ class Engine extends Report
         $this->objReedereiService->setShip($objShip);
 
         $intErrorLevel = error_reporting(0);
-        require_once($objContainer->get('kernel')->getProjectDir() . '/vendor/roelfsche/jpgraph/src/config.inc.php');
+        require_once $objContainer->get('kernel')->getProjectDir() . '/vendor/roelfsche/jpgraph/src/config.inc.php';
         error_reporting($intErrorLevel);
     }
 
@@ -57,7 +56,7 @@ class Engine extends Report
         $this->objModel->calculateData();
 
         $this->objModel->createRemarks();
-        $arrHistory = $this->objModel->arrCalculatedHistory;  //calculateCompressionData();
+        $arrHistory = $this->objModel->arrCalculatedHistory; //calculateCompressionData();
         $objLeakageStatement = $this->objModel->calculateLeakageData();
         $this->AddPage();
         $this->statisticOverview();
@@ -128,7 +127,7 @@ class Engine extends Report
         $arrData = [];
         $arrData1 = [];
         foreach ($arrLoadBalance as $arrRow) {
-            $arrData[] = (float)$arrRow['load_balance'];
+            $arrData[] = (float) $arrRow['load_balance'];
             $arrData1[] = $arrRow['measurement_num'];
         }
 
@@ -584,7 +583,6 @@ class Engine extends Report
             }
         }
 
-
         // Create the bar plot
         if (count($arrGraphs) > 1) {
 
@@ -635,7 +633,6 @@ class Engine extends Report
         if ($funcPostProcession) {
             $graph = $funcPostProcession($graph);
         }
-
 
         // jetzt erst die Überschrift, weil evtl. oben schon Rücksprung, weil keine Daten gefunden
         $this->addHeadline($strHeadline, 'h2');
@@ -710,13 +707,13 @@ class Engine extends Report
             $objStatement = $this->objModel->objMpdPressureCurveDataRepository->retrievePressureCurveData(null, null, $intCylNo);
             // $objResult = $this->objModel->calculatePressureCurveData($intCylNo);
             if (!$objStatement->RowCount()) {
-            // if (!$objResult->count()) {
+                // if (!$objResult->count()) {
                 continue; // kommt vor bei E.R. Copenhagen 29.01.2015
             }
             $arrResult = $objStatement->fetchAll();
             $boolFoundData = true;
-            $arrX = $this->objModel->as_array($arrResult, 'x_val', 'x_val');//$objResult->as_array('x_val', 'x_val');
-            $arrY = $this->objModel->as_array($arrResult, 'x_val', 'y_val');//$objResult->as_array('x_val', 'y_val');
+            $arrX = $this->objModel->as_array($arrResult, 'x_val', 'x_val'); //$objResult->as_array('x_val', 'x_val');
+            $arrY = $this->objModel->as_array($arrResult, 'x_val', 'y_val'); //$objResult->as_array('x_val', 'y_val');
 
             if (!$intMinX) {
                 $intMinX = min($arrX);
@@ -784,22 +781,22 @@ class Engine extends Report
         $arrSizes = Arr::merge(array(
             'diagram' => array(
                 'width' => 1024,
-                'height' => 400
+                'height' => 400,
             ),
             'image' => array(
                 'width' => 210,
-                'height' => 70
-            )
+                'height' => 70,
+            ),
         ), $arrSizes);
 
         $arrColor = Arr::merge(array(
             array(
                 'color' => 'white',
-                'fill_color' => '#006400'
+                'fill_color' => '#006400',
             ),
             array(
                 'color' => 'white',
-                'fill_color' => '#1111cc'
+                'fill_color' => '#1111cc',
             ),
         ), $arrColor);
 
@@ -808,7 +805,6 @@ class Engine extends Report
         // Create a graph instance
         $graph = new Graph($arrSizes['diagram']['width'], $arrSizes['diagram']['height']);
 //        $graph->SetFrame(FALSE);
-
 
         // Specify what scale we want to use,
         // text = txt scale for the X-axis
@@ -822,7 +818,7 @@ class Engine extends Report
         $graph->SetMargin(50, 0, 50, 50);
 
         // Setup a title for the graph
-//        $graph->title->Set('Sunspot example');
+        //        $graph->title->Set('Sunspot example');
 
         // Setup titles and X-axis labels
         $graph->xaxis->title->Set('Cylinder');
@@ -832,7 +828,7 @@ class Engine extends Report
 
         // Setup Y-axis title
         $graph->yaxis->title->Set('probability of leakage [%]');
-        $graph->yaxis->HideTicks(FALSE, FALSE);
+        $graph->yaxis->HideTicks(false, false);
         $graph->yaxis->setTickPositions(range(0, 100, 10), range(2, 98, 2));
         $graph->yaxis->title->SetMargin(10);
         $graph->yaxis->HideZeroLabel();
@@ -846,24 +842,18 @@ class Engine extends Report
 
         $objBarplot->SetColor($arrColor[0]['color']);
         /* Farben errechne ich anhand der Werte:
-              0 <= x < 40% --> grün
-              40% <= x < 80% --> gelb
-              sonst rot
-        */
+        0 <= x < 40% --> grün
+        40% <= x < 80% --> gelb
+        sonst rot
+         */
         $arrColors = array();
-        foreach ($arrGraph as $intValue)
-        {
-            if ($intValue < 40)
-            {
+        foreach ($arrGraph as $intValue) {
+            if ($intValue < 40) {
                 $arrColors[] = Arr::path($this->arrConfig, 'color.green');
                 // $arrColors[] = Kohana::$config->load('report.engine.color.green');
-            }
-            elseif ($intValue >= 80)
-            {
+            } elseif ($intValue >= 80) {
                 $arrColors[] = Arr::path($this->arrConfig, 'color.red');
-            }
-            else
-            {
+            } else {
                 $arrColors[] = Arr::path($this->arrConfig, 'color.yellow');
             }
         }
@@ -882,17 +872,17 @@ class Engine extends Report
             array(
                 'color' => Arr::path($this->arrConfig, 'color.green'),
                 'x' => 15,
-                'label' => 'normal/noncritical'
+                'label' => 'normal/noncritical',
             ),
             array(
                 'color' => Arr::path($this->arrConfig, 'color.yellow'),
                 'x' => 65,
-                'label' => 'steady observation recommended'
+                'label' => 'steady observation recommended',
             ),
             array(
                 'color' => Arr::path($this->arrConfig, 'color.red'),
                 'x' => 135,
-                'label' => 'check your valves fore leakage!'
+                'label' => 'check your valves fore leakage!',
             ),
         ));
     }
