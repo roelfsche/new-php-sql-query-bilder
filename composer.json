@@ -5,9 +5,9 @@
         "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "amenadiel/jpgraph": "^4",
         "gemorroj/archive7z": "^4.0",
         "ircmaxell/random-lib": "^1.2",
+        "liip/imagine-bundle": "^2.3",
         "qipsius/tcpdf-bundle": "^2.0",
         "secit-pl/imap-bundle": "^1.3",
         "sensio/framework-extra-bundle": "^5.1",
@@ -35,15 +35,23 @@
         "symfony/validator": "4.4.*",
         "symfony/web-link": "4.4.*",
         "symfony/web-profiler-bundle": "4.4.*",
-        "symfony/yaml": "4.4.*"
+        "symfony/yaml": "4.4.*",
+        "roelfsche/jpgraph":"dev-master"
     },
     "require-dev": {
         "symfony/debug-pack": "*",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*"
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/roelfsche/jpgraph.git"
+        }
+    ],
     "config": {
         "preferred-install": {
+            "roelfsche/jpgraph": "source",
             "*": "dist"
         },
         "sort-packages": true

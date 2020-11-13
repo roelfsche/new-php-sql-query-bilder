@@ -2,16 +2,22 @@
 
 namespace App\Entity\UsrWeb71;
 
+use App\Entity\BaseEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+
+// use Doctrine\ORM\Mapping\UniqueConstraint
 
 /**
  * Reederei
  *
- * @ORM\Table(name="reederei", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"})}, indexes={@ORM\Index(name="flagge", columns={"flagge"})})
- * @ORM\Entity
+ * @ORM\Table(
+ *      name="reederei",
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"})},
+ *      indexes={@ORM\Index(name="flagge", columns={"flagge"})})
+ * @ORM\Entity(repositoryClass="App\Repository\UsrWeb71\ReedereiRepository")
  */
-class Reederei
+class Reederei extends BaseEntity
 {
     /**
      * @var int
@@ -72,20 +78,11 @@ class Reederei
     private $companyCity;
 
     /**
-     * @OneToMany(targetEntity="ShipTable", mappedBy="reederei")
-     */
-    private $ships;
-    /**
      * @var string
      *
      * @ORM\Column(name="logo_unified", type="string", length=254, nullable=false)
      */
     private $logoUnified;
-
-    public function __construct()
-    {
-        $this->ships = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -187,5 +184,6 @@ class Reederei
 
         return $this;
     }
+
 
 }

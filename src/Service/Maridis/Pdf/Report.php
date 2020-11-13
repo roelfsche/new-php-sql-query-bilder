@@ -38,6 +38,7 @@ class Report extends TCPDF
 
     private $objTmpPdf = null;
 
+    private $objReedereiService = null;
     /**
      *
      */
@@ -46,6 +47,7 @@ class Report extends TCPDF
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
         $this->objContainer = $objContainer;
+        $this->objReedereiService = $objContainer->get('maridis.reederei');
 
         $this->arrReportConfig = $objContainer->getParameter('reports');
         // $this->arrConfig = $this->arrReportConfig['pdf']['default'];

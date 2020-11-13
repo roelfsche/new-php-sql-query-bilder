@@ -18,6 +18,9 @@ parameters:
     reports: # alles zu den PDF-Reports
         # DOCROOT-relativer Pfad, unter dem die generierten PDF-Dokumente abgelegt werden
         path: "reports/"
+        paths:
+            flag:
+                upload: "%kernel.project_dir%/upload/flags/"
         pdf:
             default:
                 page: 
@@ -288,8 +291,8 @@ parameters:
                     margin_bottom : 5
 
                     # Hintergrundfarbe
-                    fill_color_red : 128
-                    fill_color_green : 128
+                    fill_color_red : 255
+                    fill_color_green : 255 
                     fill_color_blue : 255
 
                     text_color_red : 0
@@ -304,10 +307,10 @@ parameters:
                     line_width : 0.2
 
                     # Parameter für SetFont
-                    font_family : 'helvetica'
+                    font_family : 'freesans'
                     # B BI I  U und alle Kombinationen
-                    font_style : 'I'
-                    font_size : 20
+                    font_style : 'B'
+                    font_size : 12
                 
                 h3 : 
                     # Parameter für TCPDF->MultiCell
@@ -488,10 +491,10 @@ parameters:
                 color : 
                     # neu: nehme nur noch rgb und rechne um
                     # siehe decodeHexColor(
-                    red : \#f05500
-                    dark_red : \#ef0000 # min-max-Linie beim Pressure-diagram
-                    yellow : \#ffce36
-                    green : \#b4d524
+                    red : '#f05500'
+                    dark_red : '#ef0000' # min-max-Linie beim Pressure-diagram
+                    yellow : '#ffce36'
+                    green : '#b4d524'
             monthly_performance: 
                 page: 
                     margins: 
@@ -980,6 +983,10 @@ services:
     maridis.mail.formatter:
         # alias: 'maridis.mail.formater'
         class: App\Maridis\Formatter\Mail
+       
+    maridis.reederei:
+        public: true
+        class: App\Service\Maridis\Reederei
 
     maridis.model.report.engine:
         public: true
@@ -993,3 +1000,14 @@ services:
         class: App\Service\Maridis\Imap
         arguments: ["%secit.imap.connections%"]
         public: true
+
+    liip_imagine.service.filter:
+        class: Liip\ImagineBundle\Service\FilterService
+        public: true
+
+    imagine.cache.resolver.maridis:
+        class: App\Imagine\Cache\Resolver\TmpResolver
+        arguments:
+            - "@filesystem"
+        tags:
+            - { name: "liip_imagine.cache.resolver", resolver: maridis_cache } 

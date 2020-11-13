@@ -7,6 +7,7 @@ use App\Entity\Marprime\EngineParams;
 use App\Entity\Marprime\MeasurementParams;
 use App\Entity\Marprime\MpdAeCurveData;
 use App\Entity\Marprime\MpdMeasurementData;
+use App\Entity\Marprime\MpdPressureCurveData;
 use App\Entity\Marprime\Report as MarprimeReport;
 use App\Entity\UsrWeb71\ShipTable;
 use App\Exception\MscException;
@@ -18,10 +19,6 @@ class Engine extends Report
 {
 
     /**
-     * @var ShipTable
-     */
-    private $objShip = null;
-    /**
      * @var stdObj
      */
     private $objEngineParams = null;
@@ -31,7 +28,7 @@ class Engine extends Report
      * bspw. 'rel_speed'
      * @var array
      */
-    public $arrCalculatedHistoryCollection = null;
+    public $arrCalculatedHistory = null;
 
     /**
      * @var int
@@ -52,11 +49,12 @@ class Engine extends Report
      */
     public $arrRemarks = null;
 
-    protected $objEngineParamsRepository = null;
-    protected $objMpdMeasurementDataRepository = null;
-    protected $objMpdAeCurveDataDataRepository = null;
-    protected $objMeasurementParamsRepository = null;
-    protected $objReportRepository = null;
+    public $objEngineParamsRepository = null;
+    public $objMpdMeasurementDataRepository = null;
+    public $objMpdPressureCurveDataRepository = null;
+    public $objMpdAeCurveDataDataRepository = null;
+    public $objMeasurementParamsRepository = null;
+    public $objReportRepository = null;
 
     public function __construct(ManagerRegistry $objDoctrineRegistry)
     {
@@ -81,6 +79,10 @@ class Engine extends Report
         $this->objReportRepository = $objDoctrineRegistry
             ->getManager('marprime')
             ->getRepository(MarprimeReport::class);
+
+        $this->objMpdPressureCurveDataRepository = $objDoctrineRegistry
+            ->getManager('marprime')
+            ->getRepository(MpdPressureCurveData::class);
     }
 
     /**
@@ -201,7 +203,7 @@ class Engine extends Report
     public function calculateData()
     {
         # statistic overview
-        $this->arrCalculatedHistoryCollection = array();
+        $this->arrCalculatedHistory = array();
 
         $this->arrHistory = $this->objMpdMeasurementDataRepository->getBySerialNumberAndDate($this->objShip->getMarprimeSerialno(), date(BaseEntity::strDateFormat, $this->intDateTs), $this->objEngineParams->strokes);
 
@@ -268,7 +270,7 @@ class Engine extends Report
                 }
 
                 // merke mir die Zeile mit den zusätzlich errechneten Daten
-                $this->arrCalculatedHistoryCollection[] = $objMpdHistory;
+                $this->arrCalculatedHistory[] = $objMpdHistory;
             }
 
             // avg: / anz
@@ -320,7 +322,7 @@ class Engine extends Report
         $intRefCountCylinder = $this->objEngineParams->cyl_count;
         $intCountCylinder = $this->objMpdMeasurementDataRepository->retrieveMeasurementCount();
 
-        if ($intCountCylinder + 1 == $intRefCountCylinder) {
+        if ($intCountCylinder == $intRefCountCylinder) {
             $arrRemarks[] = array(
                 'priority' => 'green',
                 'concern' => 'Measurement',
@@ -805,5 +807,10 @@ value you entered and measure again.',
     public function calculateLeakageData()
     {
         return $this->objMpdMeasurementDataRepository->calculateLeakageData();
+    }
+    
+    public function calculateBalanceData()
+    {
+        return $this->objMpdMeasurementDataRepository->calculateLoadBalanceData();
     }
 }

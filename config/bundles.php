@@ -15,4 +15,5 @@ return [
     SecIT\ImapBundle\ImapBundle::class => ['all' => true],
     Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle::class => ['all' => true],
     Qipsius\TCPDFBundle\QipsiusTCPDFBundle::class => ['all' => true],
+    Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
 ];

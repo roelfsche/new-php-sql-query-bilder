@@ -826,6 +826,4 @@ class MpdMeasurementData extends BaseEntity
     public function getPmaxPcomp() {
         return ($this->pmax - $this->p0) * 10;
     }
-
-
 }

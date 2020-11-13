@@ -6,6 +6,8 @@
 /public/bundles/
 /var/
 /vendor/
+/upload/*
+/upload/**/*
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
@@ -13,3 +15,7 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###

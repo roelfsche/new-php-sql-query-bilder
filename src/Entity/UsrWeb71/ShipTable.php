@@ -4,6 +4,8 @@ namespace App\Entity\UsrWeb71;
 
 use App\Entity\BaseEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne as ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn as JoinColumn;
 
 /**
  * ShipTable
@@ -68,10 +70,9 @@ class ShipTable extends BaseEntity
      * @var string
      *
      * @ORM\Column(name="reederei", type="text", length=65535, nullable=false)
-     * @ManyToOne(targetEntity="Reederei", inversedBy="ships")
-     * @JoinColumn(name="reederei", referencedColumnName="name")
      */
     private $reederei;
+
 
     /**
      * @var int|null
@@ -1503,8 +1504,8 @@ class ShipTable extends BaseEntity
         return preg_replace('/[^0-9\.]/', '', $this->getMarprimeSerialno());
     }
 
-    // public function getShippingCompany()
-    // {
-    //     return;
-    // }
+    public function getShippingCompany()
+    {
+        return;
+    }
 }

@@ -17,7 +17,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class MpdMeasurementDataRepository extends ServiceEntityRepository
 {
-    private $objParameterBag = null;
     private $arrParameterCache = [];
 
     public function __construct(ManagerRegistry $registry, ParameterBagInterface $parameterBag)
@@ -134,6 +133,14 @@ class MpdMeasurementDataRepository extends ServiceEntityRepository
     public function retrieveP0Deviation($strSerialNumber = null, $strDate = null, $floatAvgMin, $floatAvgMax)
     {
         $strSQL = 'SELECT measurement_num as cyl_no FROM mpd_measurement_data WHERE cyl_no = 0  AND  MarPrime_SerialNo = :mp_number AND date = :date AND (p0 < ' . $floatAvgMin . ' OR p0 > ' . $floatAvgMax . ')';
+        return $this->retrieveDbValue($strSQL, $strSerialNumber, $strDate);
+    }
+
+    public function calculateLoadBalanceData($strSerialNumber = null, $strDate = null) {
+        $floatAvgPower = $this->retrieveLoadAvg();
+
+        $strSQL = 'SELECT (ind_power - ' . $floatAvgPower . ') / ' . $floatAvgPower . ' * 100 AS load_balance, measurement_num FROM mpd_measurement_data WHERE cyl_no = 0  AND  MarPrime_SerialNo = :mp_number AND date = :date';
+
         return $this->retrieveDbValue($strSQL, $strSerialNumber, $strDate);
     }
 
