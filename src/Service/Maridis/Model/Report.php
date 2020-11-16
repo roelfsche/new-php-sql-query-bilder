@@ -28,14 +28,6 @@ class Report
 
     }
 
-    // public function getReederei()
-    // {
-    //     if (!$this->objShip) {
-    //         throw new MscException("Ship not set");
-    //     }
-    //     return $this->objReedereiRepository->findOneByShip($this->objShip);
-    // }
-
     /**
      * Werte als Array zurück
      *
