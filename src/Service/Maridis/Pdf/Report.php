@@ -2,13 +2,13 @@
 
 namespace App\Service\Maridis\Pdf;
 
+use App\Entity\UsrWeb71\GeneratedReports;
 use App\Exception\MscException;
 use App\Kohana\Arr;
 use Psr\Container\ContainerInterface;
-use TCPDF;
 use RandomLib\Factory;
 use RandomLib\Generator;
-use App\Entity\UsrWeb71\GeneratedReports;
+use TCPDF;
 
 class Report extends TCPDF
 {
@@ -41,11 +41,11 @@ class Report extends TCPDF
 
     private $objTmpPdf = null;
 
-    private $objReedereiService = null;
+    public $objReedereiService = null;
     /**
      *
      */
-    public function __construct(ContainerInterface $objContainer, $orientation = 'L', $unit = 'mm', $format = 'A4', $unicode = TRUE, $encoding = 'UTF-8', $diskcache = FALSE, $pdfa = FALSE )
+    public function __construct(ContainerInterface $objContainer, $orientation = 'L', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false)
     {
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
@@ -56,10 +56,16 @@ class Report extends TCPDF
         // $this->arrConfig = $this->arrReportConfig['pdf']['default'];
         switch (get_class($this)) {
             case "App\Service\Maridis\Pdf\Report\Engine":
-            default:
-                // $this->arrConfig = $this->arrReportConfig['pdf']['engine'] + $this->arrReportConfig['pdf']['default'];
                 $this->arrConfig = Arr::merge($this->arrReportConfig['pdf']['default'], $this->arrReportConfig['pdf']['engine']);
                 break;
+            case "App\Service\Maridis\Pdf\Report\Performance\Vessel":
+            case "App\Service\Maridis\Pdf\Report\CO2":
+                $this->arrConfig = Arr::merge($this->arrReportConfig['pdf']['default'], $this->arrReportConfig['pdf']['monthly_performance']);
+                break;
+            // case "App\Service\Maridis\Pdf\Report\CO2":
+            //     $this->arrConfig = Arr::merge($this->arrReportConfig['pdf']['default'], $this->arrReportConfig['pdf']['co2']);
+            //     break;
+            default:
         }
 
         $arrMargins = $this->getConfigValue('page.margins');
@@ -405,11 +411,11 @@ class Report extends TCPDF
         $arrRet = null;
         foreach ($arrConfigPathStrings as $strPath) {
             if (!$arrRet) {
-                $arrRet = Arr::path($this->arrConfig, $strPath);//Kohana::$config->load($strPath);
+                $arrRet = Arr::path($this->arrConfig, $strPath); //Kohana::$config->load($strPath);
                 continue;
             }
 
-            $arrRet = Arr::merge($arrRet, Arr::path($this->arrConfig, $strPath));//Kohana::$config->load($strPath));
+            $arrRet = Arr::merge($arrRet, Arr::path($this->arrConfig, $strPath)); //Kohana::$config->load($strPath));
         }
         return $arrRet;
     }

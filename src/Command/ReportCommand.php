@@ -105,8 +105,8 @@ class ReportCommand extends Command
     protected function setTimeInterval($arrParams)
     {
         $this->strPeriod = $this->objPropertyAccess->getValue($arrParams, '[period]'); // default: monthly
-        $this->intFromTs = $this->objPropertyAccess->getValue($arrParams, '[from_ts]'); // default: 0
-        $this->intToTs = $this->objPropertyAccess->getValue($arrParams, '[to_ts]'); // default: 0
+        $this->intFromTs = strtotime($this->objPropertyAccess->getValue($arrParams, '[from_ts]')); // default: 0
+        $this->intToTs = strtotime($this->objPropertyAccess->getValue($arrParams, '[to_ts]')); // default: 0
         // $this->intFromTs = strtotime(Arr::get($arrParams, 'from_ts')); // int oder false
         // $this->intToTs = strtotime(Arr::get($arrParams, 'to_ts')); // int oder false
 

@@ -495,6 +495,27 @@ parameters:
                     dark_red : '#ef0000' # min-max-Linie beim Pressure-diagram
                     yellow : '#ffce36'
                     green : '#b4d524'
+            co2: 
+                color: 
+                    dark_blue: 
+                        text_color_red: 20
+                        text_color_green: 49
+                        text_color_blue: 75
+                    
+                    light_blue: 
+                        text_color_red: 91
+                        text_color_green: 155
+                        text_color_blue: 213
+                    
+                    gray: 
+                        text_color_red: 92
+                        text_color_green: 92
+                        text_color_blue: 92
+                    
+                    light_gray: 
+                        text_color_red: 112
+                        text_color_green: 112
+                        text_color_blue: 112
             monthly_performance: 
                 page: 
                     margins: 
@@ -952,6 +973,102 @@ parameters:
                     draw_color_green: 0
                     draw_color_blue: 0
                 footer: 
+                    # obere/untere Grenze für DB-Werte
+        constraints: 
+            time_at_sea: 
+                min: 0
+                max: 25
+            
+            time_at_river: 
+                min: 0
+                max: 25
+            
+            time_at_port: 
+                min: 0
+                max: 25
+            
+            miles_at_sea: 
+                min: 10
+                max: 500
+            
+            miles_theoretical: 
+                min: 10
+                max: 500
+            
+            miles_at_river: 
+                min: 10
+                max: 500
+            
+            speed_through_water: 
+                min: 2
+                max: 25
+            
+            slip_through_water: 
+                min: -50
+                max: 50
+            
+            cargo_total: 
+                min: 0
+                max: 200000
+            
+            me_fuel_oil_consumption: 
+                min: 0
+                max: 70000
+            
+            me_cyl_oil_input: 
+                min: 1
+                max: 500
+            
+            me_specific_fuel_oil_consumption: 
+                min: 150
+                max: 350
+            
+            me_specific_cylinder_oil_consumption: 
+                min: 0.4
+                max: 2
+            
+            me_power_avg: 
+                min: 500
+                max: 15000
+            
+            ae_fuel_oil_consumption: 
+                min: 0
+                max: 30000
+            
+            ae_specific_fuel_oil_consumption: 
+                min: 150
+                max: 350
+            
+            ae_power: 
+                min: 0
+                max: 5000
+            
+            ae_lub_oil_input: 
+                min: 0
+                max: 1000
+            
+            boiler_fuel_oil_consumption: 
+                min: 0
+                max: 30000
+            
+            speed_rpm: 
+                min: 10
+                max: 150
+            
+            power: 
+                min: 500
+                max: 20000
+            
+            fuel_pump_index: 
+                min: 1
+                max: 500
+            
+            me_turbo_rpm: 
+                min: 500
+                max: 30000
+        
+
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -998,6 +1115,19 @@ services:
     maridis.model.report.engine:
         public: true
         class: App\Service\Maridis\Model\Report\Engine
+
+    maridis.model.report.performance.vessel:
+        public: true
+        shared: false # jedes Mal eigene Instanz
+        class: App\Service\Maridis\Model\Report\Performance\Vessel
+
+    maridis.model.report.co2:
+        public: true
+        class: App\Service\Maridis\Model\Report\CO2
+
+    # maridis.repository.marnoon.voyagereport:
+    #     shared: false
+    #     class: App\Repository\Marnoon\VoyagereportsRepository
 
     # erstmal auskommentiert da es bei bin/console debug:autowiring sonst probleme gab
     #property_accessor:

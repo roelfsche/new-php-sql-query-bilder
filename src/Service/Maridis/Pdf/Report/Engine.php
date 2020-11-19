@@ -37,7 +37,7 @@ class Engine extends Report
 
         $this->objModel = $objContainer->get('maridis.model.report.engine');
         $this->objModel->init($objShip, $this->objEngineParams, $intCreateTs);
-        $this->objReedereiService = $objContainer->get('maridis.reederei');
+        // $this->objReedereiService = $objContainer->get('maridis.reederei');
         $this->objReedereiService->setShip($objShip);
 
         $intErrorLevel = error_reporting(0);
@@ -483,7 +483,7 @@ class Engine extends Report
         $this->Write(0, 'Owner of the listed data is the company owning the engine. The company is responsible for the content. The report service is powered by MARIDIS GmbH.', '', false, 'C', true);
         $this->SetTextColor(0, 0, 255);
         $this->SetX(120);
-        $this->Write(0, 'www.maridis.de', 'http://www.maridis.de', false, 'L', false);
+        $this->Write(0, 'www.maridis.de', 'https://www.maridis.de', false, 'L', false);
         $this->SetTextColor(0, 0, 0);
         $this->Write(0, ' email ', '', false, 'L', false);
         $this->SetTextColor(0, 0, 255);

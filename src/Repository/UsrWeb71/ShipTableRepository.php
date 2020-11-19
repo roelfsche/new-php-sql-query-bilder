@@ -2,12 +2,13 @@
 
 namespace App\Repository\UsrWeb71;
 
+use App\Entity\Marnoon\Voyagereport;
 use App\Entity\Marprime\EngineParams as EngineParams;
 use App\Entity\UsrWeb71\ShipTable;
 use App\Exception\MscException;
+use App\Kohana\Arr;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection as DBALConnection;
-use Doctrine\DBAL\Driver\Connection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -81,6 +82,31 @@ class ShipTableRepository extends ServiceEntityRepository
 
     }
 
+    public function findAllForVoyageReport($intFromTs)
+    {
+        $objMnConn = $this->objManagerRegistry->getManager('marnoon')
+            ->getRepository(Voyagereport::class)
+            ->getEntityManager()
+            ->getConnection();
+        $strSql = 'SELECT DISTINCT(IMO) AS IMO FROM voyagereport WHERE IMO > 0 AND FROM_UNIXTIME(date) >= ' . $intFromTs;
+        $objStmt = $objMnConn->prepare($strSql);
+        $objStmt->execute([]);
+        $arrResult = $objStmt->fetchAll();
+        if (!$arrResult || !count($arrResult)) {
+            return [];
+        }
+        $arrImoNumbers = array_map('current', $arrResult); // Arr::pluck('IMO', $arrResult);
+        // nun die Schiffe aus der anderen DB dazu
+        $objQuery = $this->createQueryBuilder('a')
+            ->andWhere('a.imoNo IN (:string)')
+            ->setParameter('string', $arrImoNumbers, DBALConnection::PARAM_STR_ARRAY); //->andWhere('a.marprimeSerialno IN (:ids)')
+            return $objQuery->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return array von Objekten
+     */
     public function findByDateOrShippingCompany($intFromTs, $strShippingCompany = '')
     {
         $strSql = 'SELECT DISTINCT(MarPrime_SerialNo) AS marprime_serial_number from engine_params WHERE create_ts >= FROM_UNIXTIME(:from_ts) AND create_ts < FROM_UNIXTIME(:to_ts);';
@@ -105,8 +131,8 @@ class ShipTableRepository extends ServiceEntityRepository
 
         // nun die Schiffe aus der anderen DB dazu
         $objQuery = $this->createQueryBuilder('a')
-        ->andWhere('a.marprimeSerialno IN (:string)')
-        ->setParameter('string', $arrMpSerialNumbers, DBALConnection::PARAM_STR_ARRAY); //->andWhere('a.marprimeSerialno IN (:ids)')
+            ->andWhere('a.marprimeSerialno IN (:string)')
+            ->setParameter('string', $arrMpSerialNumbers, DBALConnection::PARAM_STR_ARRAY); //->andWhere('a.marprimeSerialno IN (:ids)')
 
         if (strlen($strShippingCompany)) {
             $objQuery->andWhere('a.reederei = :reederei')

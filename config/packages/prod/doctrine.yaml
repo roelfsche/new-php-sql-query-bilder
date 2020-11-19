@@ -47,7 +47,6 @@ doctrine:
             default:
                 connection: default
                 mappings:
-
                     Default:
                         is_bundle: false
                         type: annotation
@@ -63,3 +62,12 @@ doctrine:
                             dir: '%kernel.project_dir%/src/Entity/Marprime'
                             prefix: 'App\Entity\Marprime'
                             alias: Marprime 
+            marnoon:
+                connection: marnoon
+                mappings:
+                    Marnoon:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity/Marnoon'
+                        prefix: 'App\Entity\Marnoon'
+                        alias: Marnoon 

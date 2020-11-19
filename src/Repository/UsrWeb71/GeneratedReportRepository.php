@@ -6,10 +6,8 @@ use App\Entity\Marprime\EngineParams;
 use App\Entity\UsrWeb71\GeneratedReports;
 use App\Entity\UsrWeb71\ShipTable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\VarExporter\Internal\Hydrator;
 
 /**
  * @method GeneratedReports|null find($id, $lockMode = null, $lockVersion = null)
@@ -24,9 +22,34 @@ class GeneratedReportRepository extends ServiceEntityRepository
         parent::__construct($registry, GeneratedReports::class);
     }
 
-    // /**
-    //  * @return GeneratedReports[] Returns an array of GeneratedReports objects
-    //  */
+    public function findByShip(ShipTable $objShip, string $type, string $period = null, $intFromTs = 0, $intToTs = 0)
+    {
+        $strSql = 'SELECT * FROM generated_reports WHERE type= :type AND ship_id = :ship_id';
+        $arrParams = ['type' => $type, 'ship_id' => $objShip->getId()];
+        if ($period) {
+            $strSql .= ' AND period = :period';
+            $arrParams['period'] = $period;
+        }
+        if ($intFromTs && $intToTs) {
+            $strSql .= ' AND from_ts = :from_ts AND to_ts = :to_ts';
+            $arrParams['from_ts'] = $intFromTs;
+            $arrParams['to_ts'] = $intToTs;
+        }
+        $strSql .= ' LIMIT 1;';
+
+        $objConn = $this->getEntityManager()
+            ->getConnection();
+        $objStmt = $objConn->prepare($strSql);
+        $objStmt->execute($arrParams);
+        if (!$objStmt->RowCount()) {
+            return null;
+        }
+        $arrResult = $objStmt->fetchAll(Query::HYDRATE_SIMPLEOBJECT);
+        return $arrResult[0];
+    }
+    /**
+     * @return GeneratedReports[] Returns an array von Std-Objekten
+     */
     public function findByShipAndEngineParams(ShipTable $objShip, EngineParams $objEngineParams, $intFromCreateTs)
     {
         $strSql = 'SELECT * FROM generated_reports WHERE type = :type AND ship_id = :ship_id AND period = :period LIMIT 1';
@@ -44,19 +67,6 @@ class GeneratedReportRepository extends ServiceEntityRepository
         }
         $arrResult = $objStmt->fetchAll(Query::HYDRATE_SIMPLEOBJECT);
         return $arrResult[0];
-        // return $this->createQueryBuilder('a')
-        //     ->select('a')
-
-        //     ->andWhere('a.type = :type')
-        //     ->setParameter('type', 'engine-' . $objEngineParams->getEngineName() . '_' . $objEngineParams->getEngineType())
-        //     ->andWhere('a.ship = :ship_id')
-        //     ->setParameter('ship_id', $objShip->getId())
-        //     ->andWhere('a.period = :period')
-        //     ->setParameter('period', date('Y-m-d', $intFromCreateTs))
-        //     ->getQuery()
-        // // ->execute();
-        //     ->getOneOrNullResult()
-        // ;
     }
 
     /*
