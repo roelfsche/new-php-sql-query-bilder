@@ -1,7 +1,0 @@
-imap:
-    connections:
-        dev_connection:  
-            mailbox: "{imap.strato.de:993/ssl}INBOX"
-            username: "schnittstellen_test@maridis-support.de"
-            password: "RvmgV3Qd0O"
-
