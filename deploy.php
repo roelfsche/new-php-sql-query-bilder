@@ -25,7 +25,7 @@ set('repository', 'git@bitbucket.org:roelfsche/msc.git');
 set('git_tty', true); 
 
 // Shared files/dirs between deploys 
- add('shared_files', ['.env', 'config/packages/doctrine.yml']);
+ add('shared_files', ['.env'/*, 'config/packages/doctrine.yml'*/]);
 // add('shared_dirs', []);
 
 // Writable dirs by web server 
@@ -33,7 +33,6 @@ set('git_tty', true);
 
 
 // Hosts
-
 host('maridis-test')
     ->stage('test')
     ->roles('app')
