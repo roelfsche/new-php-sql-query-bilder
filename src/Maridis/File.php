@@ -160,7 +160,12 @@ abstract class File
     { //ObjectManager $objManager = NULL) {
         $objConnection = $this->objDoctrineManagerRegistry->getConnection($strConnection); //$objManager->getConnection();
         $objStmt = $objConnection->prepare($strQuery);
-        $objStmt->execute();
+        try {
+            $objStmt->execute();
+        } catch (Exception $obje) {
+            $this->objLogger->error('Error while writing to database: ');
+            $this->objLogger->error($obje->getMessage());
+        }
         return $objConnection->lastInsertId();
     }
 
