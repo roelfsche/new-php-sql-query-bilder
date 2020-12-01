@@ -85,14 +85,14 @@ class Permissions
         return $this;
     }
 
-    public function getPrivilege(): ?string
+    public function getPrivilege(): ?array
     {
-        return $this->privilege;
+        return json_decode($this->privilege, true);
     }
 
     public function setPrivilege(string $privilege): self
     {
-        $this->privilege = $privilege;
+        $this->privilege = json_encode($privilege);
 
         return $this;
     }

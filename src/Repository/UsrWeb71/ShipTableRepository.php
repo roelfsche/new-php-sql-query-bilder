@@ -9,6 +9,7 @@ use App\Exception\MscException;
 use App\Kohana\Arr;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection as DBALConnection;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -100,7 +101,7 @@ class ShipTableRepository extends ServiceEntityRepository
         $objQuery = $this->createQueryBuilder('a')
             ->andWhere('a.imoNo IN (:string)')
             ->setParameter('string', $arrImoNumbers, DBALConnection::PARAM_STR_ARRAY); //->andWhere('a.marprimeSerialno IN (:ids)')
-            return $objQuery->getQuery()
+        return $objQuery->getQuery()
             ->getResult();
     }
 
@@ -143,6 +144,33 @@ class ShipTableRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * führt eine native SQL aus und liefert das Ergebnis als Array von Arrays oder ShipTable zurück
+     *
+     * @param string $strSql - SQL
+     * @param array $arrParams - [':name' => value, ...]
+     * @param boolean $boolAsObject - wenn true, dann ShipTable[], sonst [[], [], ...]
+     * @param string $strTableAlias - braucht Doctrine, um die Spalten zu finden: Select a.*  --> a
+     * @return ShipTable[] | []
+     */
+    public function findByNativeSql($strSql, $arrParams, $boolAsObject = true, $strTableAlias = 'ship_table')
+    {
+        $objEntityManager = $this->getEntityManager();
+        if ($boolAsObject) {
+            $objResultSetMappingBuilder = new ResultSetMappingBuilder($objEntityManager);
+            $objResultSetMappingBuilder->addRootEntityFromClassMetadata(ShipTable::class, $strTableAlias);
+            $objQuery = $objEntityManager->createNativeQuery($strSql, $objResultSetMappingBuilder);
+            $objQuery->setParameters($arrParams);
+            $arrShips = $objQuery->getResult();
+        } else {
+            $objStatement = $objEntityManager
+                ->getConnection()
+                ->prepare($strSql);
+            $objStatement->execute($arrParams);
+            $arrShips = $objStatement->fetchAll();
+        }
+        return $arrShips;
+    }
     // /**
     //  * @return ShipTable[] Returns an array of ShipTable objects
     //  */

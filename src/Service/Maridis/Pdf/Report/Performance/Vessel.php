@@ -18,13 +18,13 @@ class Vessel extends Report
 
     /**
      * Modell, dass alle nötigen Berechnungen anstellt
-     * @var $objModel App\Service\Maridis\Model\Report
+     * @var $objModel App\Service\Maridis\Model\Report\Performance\Vessel
      */
     public $objModel = null;
 
     /**
      * Modell, dass alle nötigen Berechnungen anstellt für die vorherige Periode
-     * @var $objModel App\Service\Maridis\Model\Report
+     * @var $objModel App\Service\Maridis\Model\Report\Performance\Vessel
      */
     public $objPrevModel = null;
 

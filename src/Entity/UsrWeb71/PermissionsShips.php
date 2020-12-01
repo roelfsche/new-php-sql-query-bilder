@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PermissionsShips
  *
  * @ORM\Table(name="permissions_ships", indexes={@ORM\Index(name="permission_id", columns={"permission_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UsrWeb71\PermissionsShipsRepository")
  */
 class PermissionsShips
 {

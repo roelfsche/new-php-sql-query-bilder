@@ -1015,6 +1015,10 @@ parameters:
                 min: 0
                 max: 70000
             
+            me_max_fuel_oil_consumption: 
+                min: 5000
+                max: 70000
+            
             me_cyl_oil_input: 
                 min: 1
                 max: 500
@@ -1030,6 +1034,10 @@ parameters:
             me_power_avg: 
                 min: 500
                 max: 15000
+
+            me_sfoc:
+                min: 170
+                max: 280
             
             ae_fuel_oil_consumption: 
                 min: 0
@@ -1066,7 +1074,9 @@ parameters:
             me_turbo_rpm: 
                 min: 500
                 max: 30000
-        
+            foc_aux:
+                min: 1000
+                max: 15000
 
 
 services:
@@ -1121,9 +1131,16 @@ services:
         shared: false # jedes Mal eigene Instanz
         class: App\Service\Maridis\Model\Report\Performance\Vessel
 
+    maridis.model.report.performance.fleet:
+        public: true
+        shared: false # jedes Mal eigene Instanz
+        class: App\Service\Maridis\Model\Report\Performance\Fleet
+
     maridis.model.report.co2:
         public: true
         class: App\Service\Maridis\Model\Report\CO2
+
+    
 
     # maridis.repository.marnoon.voyagereport:
     #     shared: false

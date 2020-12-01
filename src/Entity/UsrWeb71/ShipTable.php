@@ -3,6 +3,8 @@
 namespace App\Entity\UsrWeb71;
 
 use App\Entity\BaseEntity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne as ManyToOne;
 use Doctrine\ORM\Mapping\JoinColumn as JoinColumn;
@@ -563,7 +565,16 @@ class ShipTable extends BaseEntity
      * @ORM\Column(name="vessel_name", type="string", length=255, nullable=false, options={"comment"="Schiffsname vom GL"})
      */
     private $vesselName;
+    /**
+     * @ORM\OneToMany(targetEntity="ShipFavorites", mappedBy="ships")
+     */
+    private $ship_favorites;
 
+    public function __construct()
+    {
+        $this->ship_favorites = new ArrayCollection();
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -1507,5 +1518,36 @@ class ShipTable extends BaseEntity
     public function getShippingCompany()
     {
         return;
+    }
+
+    /**
+     * @return Collection|ShipFavorites[]
+     */
+    public function getShipFavorites(): Collection
+    {
+        return $this->ship_favorites;
+    }
+
+    public function addShipFavorite(ShipFavorites $shipFavorite): self
+    {
+        if (!$this->ship_favorites->contains($shipFavorite)) {
+            $this->ship_favorites[] = $shipFavorite;
+            $shipFavorite->setUsers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShipFavorite(ShipFavorites $shipFavorite): self
+    {
+        if ($this->ship_favorites->contains($shipFavorite)) {
+            $this->ship_favorites->removeElement($shipFavorite);
+            // set the owning side to null (unless already changed)
+            if ($shipFavorite->getUsers() === $this) {
+                $shipFavorite->setUsers(null);
+            }
+        }
+
+        return $this;
     }
 }

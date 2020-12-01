@@ -59,6 +59,7 @@ class Report extends TCPDF
                 $this->arrConfig = Arr::merge($this->arrReportConfig['pdf']['default'], $this->arrReportConfig['pdf']['engine']);
                 break;
             case "App\Service\Maridis\Pdf\Report\Performance\Vessel":
+            case "App\Service\Maridis\Pdf\Report\Performance\Fleet":
             case "App\Service\Maridis\Pdf\Report\CO2":
                 $this->arrConfig = Arr::merge($this->arrReportConfig['pdf']['default'], $this->arrReportConfig['pdf']['monthly_performance']);
                 break;

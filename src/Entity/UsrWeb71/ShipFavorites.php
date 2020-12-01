@@ -3,6 +3,8 @@
 namespace App\Entity\UsrWeb71;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * ShipFavorites
@@ -27,6 +29,12 @@ class ShipFavorites
      * @ORM\Column(name="user_id", type="integer", nullable=false)
      */
     private $userId;
+    /**
+     * Many favoriten have one user. This is the owning side.
+     * @ManyToOne(targetEntity="Users", inversedBy="ship_favorites")
+     * @JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $users;
 
     /**
      * @var int
@@ -34,6 +42,12 @@ class ShipFavorites
      * @ORM\Column(name="ship_id", type="integer", nullable=false)
      */
     private $shipId;
+    /**
+     * Viele favoriten have one Schiff This is the owning side.
+     * @ManyToOne(targetEntity="ShipTable", inversedBy="ship_favorites")
+     * @JoinColumn(name="ship_id", referencedColumnName="id")
+     */
+    private $ships;
 
     /**
      * @var int
@@ -79,6 +93,30 @@ class ShipFavorites
     public function setCreateTs(int $createTs): self
     {
         $this->createTs = $createTs;
+
+        return $this;
+    }
+
+    public function getUsers(): ?Users
+    {
+        return $this->users;
+    }
+
+    public function setUsers(?Users $users): self
+    {
+        $this->users = $users;
+
+        return $this;
+    }
+
+    public function getShips(): ?ShipTable
+    {
+        return $this->ships;
+    }
+
+    public function setShips(?ShipTable $ships): self
+    {
+        $this->ships = $ships;
 
         return $this;
     }

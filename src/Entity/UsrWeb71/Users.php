@@ -2,13 +2,15 @@
 
 namespace App\Entity\UsrWeb71;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Users
  *
  * @ORM\Table(name="users", indexes={@ORM\Index(name="username", columns={"username"}), @ORM\Index(name="email", columns={"email"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UsrWeb71\UserRepository")
  */
 class Users
 {
@@ -26,8 +28,12 @@ class Users
      *
      * @ORM\Column(name="user_id", type="integer", nullable=false, options={"comment"="notwendig, wenn historienfähig"})
      */
+    
     private $userId;
-
+    /**
+     * @ORM\OneToMany(targetEntity="ShipFavorites", mappedBy="users")
+     */
+    private $ship_favorites;
     /**
      * @var string
      *
@@ -139,6 +145,11 @@ class Users
      * @ORM\Column(name="create_ts", type="integer", nullable=false)
      */
     private $createTs = '0';
+
+    public function __construct()
+    {
+        $this->ship_favorites = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -349,5 +360,35 @@ class Users
         return $this;
     }
 
+    /**
+     * @return Collection|ShipFavorites[]
+     */
+    public function getShipFavorites(): Collection
+    {
+        return $this->ship_favorites;
+    }
+
+    public function addShipFavorite(ShipFavorites $shipFavorite): self
+    {
+        if (!$this->ship_favorites->contains($shipFavorite)) {
+            $this->ship_favorites[] = $shipFavorite;
+            $shipFavorite->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShipFavorite(ShipFavorites $shipFavorite): self
+    {
+        if ($this->ship_favorites->contains($shipFavorite)) {
+            $this->ship_favorites->removeElement($shipFavorite);
+            // set the owning side to null (unless already changed)
+            if ($shipFavorite->getUserId() === $this) {
+                $shipFavorite->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
 
 }

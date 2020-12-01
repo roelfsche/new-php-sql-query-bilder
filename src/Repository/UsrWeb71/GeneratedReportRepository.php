@@ -5,9 +5,12 @@ namespace App\Repository\UsrWeb71;
 use App\Entity\Marprime\EngineParams;
 use App\Entity\UsrWeb71\GeneratedReports;
 use App\Entity\UsrWeb71\ShipTable;
+use App\Kohana\Arr;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use NilPortugues\Sql\QueryBuilder\Builder\GenericBuilder;
 
 /**
  * @method GeneratedReports|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,6 +23,35 @@ class GeneratedReportRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, GeneratedReports::class);
+    }
+
+    /**
+     * liefert einen Report zu einer Fleet zurück
+     *
+     * @param string $strFleetHash
+     * @param string $strPeriod
+     * @return GeneratedReport|null
+     */
+    public function findFleetReport($strFleetHash, $strType, $strPeriod)
+    {
+        $objBuilder = new GenericBuilder();
+        $objQuery = $objBuilder->select('generated_reports', ['*'])
+            ->where()
+            ->equals('type', $strType)
+            ->equals('period', $strPeriod)
+            ->equals('fleet_hash', $strFleetHash)
+            ->end()
+            ->limit(1);
+
+        $strSQL = $objBuilder->write($objQuery);
+        $arrParams = $objBuilder->getValues();
+        $objEntityManager = $this->getEntityManager();
+        $objResultSetMappingBuilder = new ResultSetMappingBuilder($objEntityManager);
+        $objResultSetMappingBuilder->addRootEntityFromClassMetadata(GeneratedReports::class, 'generated_reports');
+        $objQuery = $objEntityManager->createNativeQuery($strSQL, $objResultSetMappingBuilder);
+        $objQuery->setParameters($arrParams);
+        $arrReports = $objQuery->getResult();
+        return Arr::get($arrReports, 1);
     }
 
     public function findByShip(ShipTable $objShip, string $type, string $period = null, $intFromTs = 0, $intToTs = 0)

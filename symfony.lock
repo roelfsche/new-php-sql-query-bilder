@@ -112,6 +112,12 @@
     "nikic/php-parser": {
         "version": "v4.3.0"
     },
+    "nilportugues/sql-query-builder": {
+        "version": "1.8.0"
+    },
+    "nilportugues/sql-query-formatter": {
+        "version": "v1.2.2"
+    },
     "ocramius/package-versions": {
         "version": "1.4.2"
     },

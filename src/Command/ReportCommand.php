@@ -3,14 +3,15 @@
 namespace App\Command;
 
 use App\Entity\UsrWeb71\ShipTable as UsrWeb71ShipTable;
+use App\Entity\UsrWeb71\Users;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Qipsius\TCPDFBundle\Controller\TCPDFController;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Qipsius\TCPDFBundle\Controller\TCPDFController;
 
 class ReportCommand extends Command
 {
@@ -165,6 +166,15 @@ class ReportCommand extends Command
             [
                 ':imo' => $objShip->getImoNo(),
                 ':name' => str_pad(substr($objShip->getAktName(), 0, 20), 20, ' ', STR_PAD_RIGHT),
+            ] + $arrValues
+        ));
+    }
+    protected function logForUser(Users $objUser, $strLevel, $strMessage, $arrValues = [])
+    {
+        $this->objLogger->{$strLevel}(strtr('User=:username; id=:user_id : ' . $strMessage,
+            [
+                ':username' => $objUser->getUsername(),
+                ':user_id' => $objUser->getId(),
             ] + $arrValues
         ));
     }
