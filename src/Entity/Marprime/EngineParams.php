@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\Marprime;
+namespace App\Entity\Marprime;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,10 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
  * EngineParams
  *
  * @ORM\Table(name="engine_params")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Marprime\EngineParamsRepository")
  */
 class EngineParams
 {
+
     /**
      * @var \DateTime
      *
@@ -162,6 +163,244 @@ class EngineParams
      * @ORM\Column(name="create_ts", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
     private $createTs = 'CURRENT_TIMESTAMP';
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function getMarprimeSerialno(): ?string
+    {
+        return $this->marprimeSerialno;
+    }
+
+    public function getMeasurementtime(): ?\DateTimeInterface
+    {
+        return $this->measurementtime;
+    }
+
+    public function setMeasurementtime(\DateTimeInterface $measurementtime): self
+    {
+        $this->measurementtime = $measurementtime;
+
+        return $this;
+    }
+
+    public function getEngineName(): ?string
+    {
+        return $this->engineName;
+    }
+
+    public function setEngineName(string $engineName): self
+    {
+        $this->engineName = $engineName;
+
+        return $this;
+    }
+
+    public function getEngineType(): ?string
+    {
+        return $this->engineType;
+    }
+
+    public function setEngineType(string $engineType): self
+    {
+        $this->engineType = $engineType;
+
+        return $this;
+    }
+
+    public function getCylCount(): ?bool
+    {
+        return $this->cylCount;
+    }
+
+    public function setCylCount(bool $cylCount): self
+    {
+        $this->cylCount = $cylCount;
+
+        return $this;
+    }
+
+    public function getFireAngle(): ?string
+    {
+        return $this->fireAngle;
+    }
+
+    public function setFireAngle(string $fireAngle): self
+    {
+        $this->fireAngle = $fireAngle;
+
+        return $this;
+    }
+
+    public function getStrokes(): ?bool
+    {
+        return $this->strokes;
+    }
+
+    public function setStrokes(bool $strokes): self
+    {
+        $this->strokes = $strokes;
+
+        return $this;
+    }
+
+    public function getSpeed(): ?float
+    {
+        return $this->speed;
+    }
+
+    public function setSpeed(float $speed): self
+    {
+        $this->speed = $speed;
+
+        return $this;
+    }
+
+    public function getPower(): ?float
+    {
+        return $this->power;
+    }
+
+    public function setPower(float $power): self
+    {
+        $this->power = $power;
+
+        return $this;
+    }
+
+    public function getStroke(): ?float
+    {
+        return $this->stroke;
+    }
+
+    public function setStroke(float $stroke): self
+    {
+        $this->stroke = $stroke;
+
+        return $this;
+    }
+
+    public function getBore(): ?float
+    {
+        return $this->bore;
+    }
+
+    public function setBore(float $bore): self
+    {
+        $this->bore = $bore;
+
+        return $this;
+    }
+
+    public function getConnectionRatio(): ?float
+    {
+        return $this->connectionRatio;
+    }
+
+    public function setConnectionRatio(float $connectionRatio): self
+    {
+        $this->connectionRatio = $connectionRatio;
+
+        return $this;
+    }
+
+    public function getCompressionRatio(): ?float
+    {
+        return $this->compressionRatio;
+    }
+
+    public function setCompressionRatio(float $compressionRatio): self
+    {
+        $this->compressionRatio = $compressionRatio;
+
+        return $this;
+    }
+
+    public function getInletOpen(): ?int
+    {
+        return $this->inletOpen;
+    }
+
+    public function setInletOpen(int $inletOpen): self
+    {
+        $this->inletOpen = $inletOpen;
+
+        return $this;
+    }
+
+    public function getInletClose(): ?int
+    {
+        return $this->inletClose;
+    }
+
+    public function setInletClose(int $inletClose): self
+    {
+        $this->inletClose = $inletClose;
+
+        return $this;
+    }
+
+    public function getOutletOpen(): ?int
+    {
+        return $this->outletOpen;
+    }
+
+    public function setOutletOpen(int $outletOpen): self
+    {
+        $this->outletOpen = $outletOpen;
+
+        return $this;
+    }
+
+    public function getOutletClose(): ?int
+    {
+        return $this->outletClose;
+    }
+
+    public function setOutletClose(int $outletClose): self
+    {
+        $this->outletClose = $outletClose;
+
+        return $this;
+    }
+
+    public function getCappaCorrection(): ?float
+    {
+        return $this->cappaCorrection;
+    }
+
+    public function setCappaCorrection(float $cappaCorrection): self
+    {
+        $this->cappaCorrection = $cappaCorrection;
+
+        return $this;
+    }
+
+    public function getLastChange(): ?\DateTimeInterface
+    {
+        return $this->lastChange;
+    }
+
+    public function setLastChange(\DateTimeInterface $lastChange): self
+    {
+        $this->lastChange = $lastChange;
+
+        return $this;
+    }
+
+    public function getCreateTs(): ?\DateTimeInterface
+    {
+        return $this->createTs;
+    }
+
+    public function setCreateTs(\DateTimeInterface $createTs): self
+    {
+        $this->createTs = $createTs;
+
+        return $this;
+    }
 
 
 }

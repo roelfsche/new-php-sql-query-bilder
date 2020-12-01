@@ -10,6 +10,7 @@ use App\Maridis\File\Pdf;
 use App\Maridis\File\VoyageReport;
 // use App\Entity\UsrWeb71\ShipTable as ShipTable;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\DBAL\Exception\SyntaxErrorException;
 use ErrorException;
 use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -142,8 +143,13 @@ abstract class File
         $objConnection = $this->objDoctrineManagerRegistry->getConnection($strConnection); //$objManager->getConnection();
         // echo $strQuery . "\n\n\n";
         $objStmt = $objConnection->prepare($strQuery);
-        $objStmt->execute();
-        return $objStmt;
+        try {
+            $objStmt->execute();
+            return $objStmt;
+        } catch (SyntaxErrorException $objSEE) {
+            $this->objLogger->warning("Error in SQL-Statement " . $objSEE->getMessage());
+        }
+        return null;
     }
 
     /**

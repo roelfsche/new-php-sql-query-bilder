@@ -5,7 +5,8 @@ namespace App\Repository\UsrWeb71;
 use App\Entity\UsrWeb71\ShipTable;
 use App\Exception\MscException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
+use Entity\Marprime\EngineParams;
 
 /**
  * @method ShipTable|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,8 +16,14 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class ShipTableRepository extends ServiceEntityRepository
 {
+    /**
+     * @param Doctrine\Common\Persistence\ManagerRegistry
+     */
+    protected $objManagerResistry;
+
     public function __construct(ManagerRegistry $registry)
     {
+        $this->objManagerResistry = $registry;
         parent::__construct($registry, ShipTable::class);
     }
 
@@ -34,7 +41,7 @@ class ShipTableRepository extends ServiceEntityRepository
 
     /**
      * @param string $strImoNumber
-     * @return ShipTable 
+     * @return ShipTable
      * @throws MscException
      */
     public function findByImoNumber($strImoNumber)
@@ -54,7 +61,7 @@ class ShipTableRepository extends ServiceEntityRepository
 
     /**
      * @param string $strCdsSerialNumber
-     * @return ShipTable 
+     * @return ShipTable
      * @throws MscException
      */
     public function findByCdsSerialNumber($strCdsSerialNumber)
@@ -70,6 +77,20 @@ class ShipTableRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
 
+    }
+
+    public function findByDateOrShippingCompany($intFromTs, $strShippingCompany = '')
+    {
+        $strSql = 'SELECT DISTINCT(MarPrime_SerialNo) AS marprime_serial_number from engine_params WHERE create_ts >= :from_ts AND create_ts < :to_ts;';
+        $objObjectManager = $this->objManagerResistry->getManager(EngineParams::class);
+        
+        // $objStmt = $objEntityManager->getConnection('marprime')->prepare($strSql);
+        // $objStmt->execute([
+        //     ':from_ts' => $intFromTs,
+        //     ':to_ts' => $intFromTs + 86400
+        // ]);
+        // $arrResult = $objStmt->fetchAll();
+        $test =0 ;
     }
 
     // /**
