@@ -33,7 +33,6 @@ set('git_tty', true);
 
 
 // Hosts
-
 host('maridis-test')
     ->stage('test')
     ->roles('app')
