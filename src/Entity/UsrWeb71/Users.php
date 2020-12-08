@@ -2,9 +2,11 @@
 
 namespace App\Entity\UsrWeb71;
 
+use App\Kohana\Arr;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * Users
@@ -28,7 +30,7 @@ class Users
      *
      * @ORM\Column(name="user_id", type="integer", nullable=false, options={"comment"="notwendig, wenn historienfähig"})
      */
-    
+
     private $userId;
     /**
      * @ORM\OneToMany(targetEntity="ShipFavorites", mappedBy="users")
@@ -252,14 +254,14 @@ class Users
         return $this;
     }
 
-    public function getData(): ?string
+    public function getData(): ?array
     {
-        return $this->data;
+        return json_decode($this->data, true);
     }
 
-    public function setData(string $data): self
+    public function setData(array $data): self
     {
-        $this->data = $data;
+        $this->data = json_encode($data);
 
         return $this;
     }
@@ -389,6 +391,55 @@ class Users
         }
 
         return $this;
+    }
+    /**
+     * Gibt zurück, ob der User das "sende Fleet-Report" Häkchen in seiner Config gesetzt hat.
+     *
+     * @return boolean
+     */
+    public function isSendFleetReport()
+    {
+        return (bool) Arr::path($this->getData(), 'reports.performance', false);
+    }
+
+    /**
+     * Gibt zurück, ob der User das "sende Voyage-Report" Häkchen in seiner Config gesetzt hat.
+     *
+     * @return boolean
+     */
+    public function isSendVoyageReport()
+    {
+        return (bool) Arr::path($this->getData(), 'reports.voyage', false);
+    }
+
+    /**
+     * Gibt zurück, ob der User das "sende Performance-Report" Häkchen in seiner Config gesetzt hat.
+     *
+     * @return boolean
+     */
+    public function isSendCO2Report()
+    {
+        return (bool) Arr::path($this->getData(), 'reports.co2', false);
+    }
+
+    /**
+     * Gibt zurück, ob der User das "sende Engine-Report" Häkchen in seiner Config gesetzt hat.
+     *
+     * @return boolean
+     */
+    public function isSendEngineReport()
+    {
+        return (bool) Arr::path($this->getData(), 'reports.engine', false);
+    }
+
+    /**
+     * Gibt zurück, ob der User das "sende Reminder" Häkchen in seiner Config gesetzt hat.
+     *
+     * @return boolean
+     */
+    public function isSendReminderMarprime()
+    {
+        return (bool) Arr::path($this->getData(), 'reminder.marprime', false);
     }
 
 }

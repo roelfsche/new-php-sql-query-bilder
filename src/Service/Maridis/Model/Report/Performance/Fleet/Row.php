@@ -6,6 +6,7 @@ use App\Entity\Marnoon\Voyagereport;
 use App\Entity\UsrWeb71\ShipTable;
 use App\Kohana\Arr;
 use App\Service\Maridis\Model\Report;
+use Monolog\Logger;
 use NilPortugues\Sql\QueryBuilder\Builder\GenericBuilder;
 use Psr\Container\ContainerInterface;
 
@@ -53,9 +54,9 @@ class Row extends Report
      * @param int            $intFromTs - Unix-TS: inkl. Intervalluntergrenze
      * @param int            $intToTs   - unix-ts: inkl. Intervallobergrenze
      */
-    public function __construct(ContainerInterface $objContainer, ShipTable $objShip, $intFromTs, $intToTs)
+    public function __construct(ContainerInterface $objContainer, ShipTable $objShip, $intFromTs, $intToTs, Logger $objLogger)
     {
-        parent::__construct($objContainer, $objContainer->get('doctrine'));
+        parent::__construct($objContainer, $objContainer->get('doctrine'), $objLogger);
 
         // $this->objContainer = $objContainer;
         $this->objShip = $objShip;

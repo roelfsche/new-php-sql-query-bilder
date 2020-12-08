@@ -4,10 +4,15 @@ namespace App\Service\Maridis\Model\Report\Performance;
 
 use App\Entity\Marnoon\Voyagereport;
 use App\Entity\UsrWeb71\ShipTable;
+use App\Entity\UsrWeb71\Users;
 use App\Kohana\Arr;
 use App\Service\Maridis\Model\Report;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use function DeepCopy\deep_copy;
+use Monolog\Logger;
+use NilPortugues\Sql\QueryBuilder\Manipulation\Select;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class Vessel extends Report
 {
@@ -38,9 +43,9 @@ class Vessel extends Report
      */
     public $objVoyageReportsRepository = null;
 
-    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry)
+    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry, LoggerInterface $objLogger)
     {
-        parent::__construct($objContainer, $objDoctrineRegistry);
+        parent::__construct($objContainer, $objDoctrineRegistry, $objLogger);
 
         /** @var $this->objVoyageReportsRepository App\Repository\Marnoon\VoyagereportsRepository */
         $this->objVoyageReportsRepository = $objDoctrineRegistry
@@ -435,5 +440,136 @@ class Vessel extends Report
 
     //     return (int) $arrData['power_count'];
     // }
+
+    /**
+     * Diese Methode sendet für alle Schiffe in der Collection jeweils eine E-Mail an den User mit den Voyage/CO2-Reports.
+     *
+     * Sie ist protected und wird nur über {@link Task_Report::sendEmail()} aufgerufen
+     *
+     * @param App\Entity\UsrWeb71\Users $objUser
+     * @param App\Entity\UsrWeb71\ShipTable[] $arrShips                         - array
+     * @param NilPortugues\Sql\QueryBuilder\Manipulation\Select $objReportQuery - Query-Objek, dass schon den Zeitraum eingeschränkt hat, siehe {@link Task_Report::sendEmail()}
+     * @param array $arrParams                                                  - enthält die Parameter, die letztendlich _execute() übergeben wurden
+     */
+    public function sendEmailForUser(Users $objUser, $arrShips, Select $objReportQuery, $arrParams, \Swift_Mailer $objSwiftMailer, Logger $objLogger)
+    {
+        $boolSendVoyageReport = $objUser->isSendVoyageReport();
+        $boolSendCO2Report = $objUser->isSendCO2Report();
+        $strEmailSubjectSuffix = '';
+
+        if (!($boolSendCO2Report || $boolSendVoyageReport)) {
+            $this->logForUser($objUser, 'E-Mail mit Vessel-Performance-/CO2-Reports NICHT an <:recipient> versendet, weil in seinem Profil nicht aktiviert.', array(
+                ':recipient' => $objUser->email,
+            ));
+            return false;
+        }
+
+        // wenn ich nach dem Kreierungsdatum schaue, dann kann das im letzten Monat liegen, wobei der Report aber in diesem
+        // Monat erstellt wurde. Brauche dann nicht nach period selektieren, weil sonst 0 (oder zufällig) ein paar Reports
+        // selektiert würden
+        if ($arrParams['email'] != 'created') {
+            $objReportQuery->where()
+                ->equals('period', date('Y-m', $this->intFromTs));
+            // $objReportQuery->where('period', '=', date('Y-m', $this->intFromTs));
+        }
+
+        $objSubWhere = $objReportQuery->where()
+            ->subWhere('OR');
+        // $objReportQuery->and_where_open();
+
+        if ($boolSendVoyageReport) {
+            $objSubWhere->equals('type', $arrParams['period'] . '-voyage');
+            // $objReportQuery->where('type', '=', $this->strPeriod . '-voyage');
+            $strEmailSubjectSuffix .= 'Performance';
+        }
+        if ($boolSendCO2Report) {
+
+            $objSubWhere->equals('type', '=', $arrParams['period'] . '-co2');
+            // $objReportQuery->or_where('type', '=', $this->strPeriod . '-co2');
+            $strEmailSubjectSuffix .= ((strlen($strEmailSubjectSuffix)) ? '- and ' : '') . 'CO2';
+        }
+
+        // $objReportQuery->and_where_close();
+        $strEmailSubjectSuffix .= '-Report(s)';
+
+        foreach ($arrShips as $objShip) {
+            // foreach ($objShipCollection as $objShip) {
+            $objQuery = deep_copy($objReportQuery);
+            $objQuery->where()
+                ->equals('ship_id', $objShip->id);
+            // $objQuery->where('ship', '=', $objShip->id);
+
+            $arrReports = $this->objGeneratedReportsRepository->findBySelect($objQuery);
+            // $objReportCollection = $objQuery->execute();
+            if (!count($arrReports)) {
+                $this->logForShip($objShip, 'info', 'E-Mail mit Vessel-Performance-/CO2-Reports NICHT an :username <:recipient> versendet, weil keine aktuellen vorhanden.', array(
+                    ':recipient' => $objUser->getEmail(),
+                    ':username' => $objUser->getUsername(),
+                ));
+                continue;
+            }
+
+            // $message = (new \Swift_Message('Hello Email'))
+            //     ->setFrom('schnittstellen_test@maridis-support.de')
+            //     ->setTo('rolf.staege@lumturo.net')
+            //     ->setBody('<h1>test</h1>', 'text/html');
+            // $objSwiftMailer->send($message);
+
+            // $mailer->send($email);
+
+            $message = (new \Swift_Message('Hello Email'))
+                ->setFrom('schnittstellen_test@maridis-support.de')
+                ->setTo('rolf.staege@lumturo.net')
+                ->setBody('<h1>test</h1>', 'text/html');
+
+            $objEmail = new Zend_Mail('UTF-8');
+//            $objEmail->setType(Zend_Mime::MULTIPART_RELATED)//ALTERNATIVE)
+            $objEmail->setType(Zend_Mime::MULTIPART_MIXED) //ALTERNATIVE)
+                ->setBodyHtml(View::factory('email/report/html'), 'UTF-8', Zend_Mime::ENCODING_8BIT)
+                ->setBodyText(View::factory('email/report/text'), 'UTF-8', Zend_Mime::ENCODING_8BIT)
+                ->setFrom('support@maridis.de')
+                ->addTo((($arrParams['dry_email'] != '') ? $arrParams['dry_email'] : $objUser->email))
+                ->setSubject(strtr(':name - :period_type (:period) :suffix', array(
+                    ':name' => $objShip->actual_name,
+                    ':period_type' => ucfirst(Arr::get($this->get_options(), 'period', '')), // montly/yearly
+                    ':period' => date('Y-m', $this->intFromTs),
+                    ':suffix' => $strEmailSubjectSuffix,
+                )));
+
+            foreach ($objReportCollection as $objReport) {
+
+                if (strpos($objReport->type, 'co2') !== false) {
+                    $strFilename = 'CO2-Monitoring-Report';
+                } else {
+                    $strFilename = 'Vessel-Performance-Report';
+                }
+                $objEmail->createAttachment($objReport->getPdfContent(), 'application/pdf', Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, strtr(':filename-:name-:from---:to.pdf', array(
+                    ':filename' => $strFilename,
+                    ':name' => $objShip->actual_name,
+                    ':from' => date('Y-m-d', $this->intFromTs),
+                    ':to' => date('Y-m-d', $this->intToTs),
+                )));
+            }
+
+            //  E-Mail senden
+            if ($objEmail->hasAttachments) {
+                if (Arr::get($arrParams, 'dry_run', false) === false || $arrParams['dry_email'] != '') {
+                    Helper_Email::sendMail($objEmail);
+                }
+                $this->log($objShip, ':dryRun E-Mail mit :count Vessel-Performance-/CO2-Reports an :username <:recipient> versendet.', array(
+                    ':dryRun' => (Arr::get($arrParams, 'dry_run', false) !== false) ? '[dry-run]' : '',
+                    ':count' => $objEmail->getPartCount(),
+                    ':username' => $objUser->username,
+                    ':recipient' => $objUser->email,
+                ));
+
+            } else {
+                $this->log($objShip, 'E-Mail mit Vessel-Performance-/CO2-Reports NICHT an :username <:recipient> versendet, weil keine aktuellen vorhanden.', array(
+                    ':username' => $objUser->username,
+                    ':recipient' => $objUser->email,
+                ));
+            }
+        }
+    }
 
 }

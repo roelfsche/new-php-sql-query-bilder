@@ -6,7 +6,9 @@ use App\Kohana\Arr;
 use App\Service\Maridis\Model\Report;
 use App\Service\Maridis\Model\Report\Performance\Fleet\Row;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Generiert die Daten für das Performance-Ranking
@@ -42,9 +44,9 @@ class Fleet extends Report
      */
     public $arrSum = null;
 
-    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry)
+    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry, LoggerInterface $objLogger)
     {
-        parent::__construct($objContainer, $objDoctrineRegistry);
+        parent::__construct($objContainer, $objDoctrineRegistry, $objLogger);
         
         /** @var $this->objVoyageReportsRepository App\Repository\Marnoon\VoyagereportsRepository */
         $this->objVoyageReportsRepository = $objDoctrineRegistry
@@ -84,7 +86,7 @@ class Fleet extends Report
 
         $arrData = array();
         foreach ($this->arrShips as $objShip) {
-            $objDataRow = new Row($this->objContainer, $objShip, $this->intFromTs, $this->intToTs);
+            $objDataRow = new Row($this->objContainer, $objShip, $this->intFromTs, $this->intToTs, $this->objLogger);
             $arrRow = $objDataRow->calculateData($intCacheTime);
             if ($arrRow) {
                 $arrData[] = $arrRow;

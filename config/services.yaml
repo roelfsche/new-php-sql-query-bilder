@@ -1136,10 +1136,23 @@ services:
         shared: false # jedes Mal eigene Instanz
         class: App\Service\Maridis\Model\Report\Performance\Fleet
 
+    maridis.model.user:
+        public: true
+        shared: true 
+        class: App\Service\Maridis\Model\User
+        
+    maridis.model.voyage:
+        public: true
+        class: App\Service\Maridis\Model\Voyage
     maridis.model.report.co2:
         public: true
         class: App\Service\Maridis\Model\Report\CO2
 
+    maridis.repository:
+        arguments:
+            - Doctrine\Common\Persistence\ManagerRegistry
+            - "string"
+        class: App\Repository\Maridis
     
 
     # maridis.repository.marnoon.voyagereport:

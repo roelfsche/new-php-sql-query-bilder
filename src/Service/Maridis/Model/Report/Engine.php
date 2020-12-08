@@ -14,6 +14,8 @@ use App\Exception\MscException;
 use App\Kohana\Arr;
 use App\Service\Maridis\Model\Report;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class Engine extends Report
 {
@@ -56,9 +58,9 @@ class Engine extends Report
     public $objMeasurementParamsRepository = null;
     public $objReportRepository = null;
 
-    public function __construct(ManagerRegistry $objDoctrineRegistry)
+    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry, LoggerInterface $objLogger)
     {
-        parent::__construct($objDoctrineRegistry);
+        parent::__construct($objContainer, $objDoctrineRegistry, $objLogger);
 
         $this->objEngineParamsRepository = $objDoctrineRegistry
             ->getManager('marprime')

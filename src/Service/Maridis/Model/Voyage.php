@@ -23,6 +23,13 @@ class Voyage
     private $objShipTableRepository;
     private $objUserService;
 
+    /**
+     * Zur korrekten Verwendung, muss im UserService vorher der User gesetzt werden!!
+     *
+     * @param VoyagereportsRepository $objVoyageRepo
+     * @param User $objUserService
+     * @param ShipTableRepository $objShipTableRepository
+     */
     public function __construct(VoyagereportsRepository $objVoyageRepo, User $objUserService, ShipTableRepository $objShipTableRepository)
     {
         $this->objVoyageRepo = $objVoyageRepo;
@@ -42,8 +49,8 @@ class Voyage
         $objQuery = $objBuilder->select('voyagereport', ['IMO']);
         $objQuery->distinct()
             ->where()
-            // ->in('IMO', $arrShipIds);
-            ->equals('IMO', 9692698);
+            ->in('IMO', $arrShipIds);
+        // ->equals('IMO', 9692698);
 
         // var_dump($objBuilder->writeFormatted($objQuery));exit();
 
@@ -52,6 +59,7 @@ class Voyage
 
         if ($boolOnlyFavorites) {
             $objShipQuery->join('ship_favorites', 'id', 'ship_id')
+                ->on()
                 ->equals('user_id', $this->objUserService->getUser());
         }
 

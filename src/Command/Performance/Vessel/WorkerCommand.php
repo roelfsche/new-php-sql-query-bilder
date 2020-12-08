@@ -5,6 +5,8 @@ namespace App\Command\Performance\Vessel;
 use App\Command\ReportCommand;
 use App\Entity\UsrWeb71\GeneratedReports;
 use App\Repository\UsrWeb71\GeneratedReportRepository;
+use App\Service\Maridis\Model\User;
+use App\Service\Maridis\Model\Voyage;
 use App\Service\Maridis\Pdf\Report\Performance\Vessel;
 // use App\Service\Maridis\Model\Report\Performance\Vessel;
 // use App\Service\Maridis\Pdf\Report\Engine;
@@ -33,9 +35,10 @@ class WorkerCommand extends ReportCommand
      */
     protected $objGeneratedReportRepository = null;
 
-    public function __construct(ContainerInterface $container, LoggerInterface $appLogger, \Swift_Mailer $mailer, TCPDFController $tcpdf)
+    public function __construct(ContainerInterface $container, LoggerInterface $appLogger, \Swift_Mailer $mailer, TCPDFController $tcpdf, User $objUserService, Voyage $objVoyageService)
     {
-        parent::__construct($container, $appLogger, $mailer, $tcpdf);
+         
+        parent::__construct($container, $appLogger, $mailer, $tcpdf, $objUserService, $objVoyageService);
         // $this->objEngineParamsRepository = $this->objDoctrineManagerRegistry
         //     ->getManager('marprime')
         //     ->getRepository(EngineParams::class);

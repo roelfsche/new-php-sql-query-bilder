@@ -6,6 +6,7 @@ use App\Entity\Marprime\EngineParams;
 use App\Entity\UsrWeb71\GeneratedReports;
 use App\Entity\UsrWeb71\ShipTable;
 use App\Kohana\Arr;
+use App\Repository\Maridis as MaridisRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
@@ -18,7 +19,7 @@ use NilPortugues\Sql\QueryBuilder\Builder\GenericBuilder;
  * @method GeneratedReports[]    findAll()
  * @method GeneratedReports[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GeneratedReportRepository extends ServiceEntityRepository
+class GeneratedReportRepository extends MaridisRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

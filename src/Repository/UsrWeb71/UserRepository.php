@@ -25,6 +25,13 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, Users::class);
     }
 
+    /***
+     * Diese Methode holt alle User, die ein bestimmtes Recht auf einer Resource haben
+     *
+     * @param string $strResource  - siehe acl.php
+     * @param string $strPrivilege - siehe acl.php
+     * @return User[]
+     */
     public function findByResourcePrivilege($strResource, $strPrivilege)
     {
 
@@ -204,7 +211,6 @@ WHERE (u.user_id = :user_id)
         // $arrPermissions = $objStatement->fetchAll();
         // return $arrPermissions;
 
-
         $objEntityManager = $this->getEntityManager();
         $objResultSetMappingBuilder = new ResultSetMappingBuilder($objEntityManager);
         $objResultSetMappingBuilder->addRootEntityFromClassMetadata(Permissions::class, 'p');
@@ -231,22 +237,23 @@ WHERE (u.user_id = :user_id)
      */
 
     /*
-public function findOneBySomeField($value): ?Users
-{
-return $this->createQueryBuilder('u')
-->andWhere('u.exampleField = :val')
-->setParameter('val', $value)
-->getQuery()
-->getOneOrNullResult()
-;
-}
- */
+    public function findOneBySomeField($value): ?Users
+    {
+    return $this->createQueryBuilder('u')
+    ->andWhere('u.exampleField = :val')
+    ->setParameter('val', $value)
+    ->getQuery()
+    ->getOneOrNullResult()
+    ;
+    }
+     */
 /**
  * public...
  *
  * @return void
  */
-public function getEntityManager() {
-    return parent::getEntityManager();
-}
+    public function getEntityManager()
+    {
+        return parent::getEntityManager();
+    }
 }

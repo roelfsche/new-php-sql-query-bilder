@@ -7,7 +7,9 @@ use App\Entity\UsrWeb71\ShipTable;
 use App\Kohana\Arr;
 use App\Service\Maridis\Model\Report;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class CO2 extends Report
 {
@@ -38,9 +40,9 @@ class CO2 extends Report
      */
     public $objVoyageReportsRepository = null;
 
-    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry)
+    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry, LoggerInterface $objLogger)
     {
-        parent::__construct($objContainer, $objDoctrineRegistry);
+        parent::__construct($objContainer, $objDoctrineRegistry, $objLogger);
 
         /** @var $this->objVoyageReportsRepository App\Repository\Marnoon\VoyagereportsRepository */
         $this->objVoyageReportsRepository = $objDoctrineRegistry

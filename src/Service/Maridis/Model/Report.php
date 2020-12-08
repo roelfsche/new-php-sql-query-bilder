@@ -2,12 +2,17 @@
 
 namespace App\Service\Maridis\Model;
 
+use App\Entity\UsrWeb71\GeneratedReports;
 use App\Entity\UsrWeb71\Reederei;
+use App\Entity\UsrWeb71\ShipTable;
+use App\Entity\UsrWeb71\Users;
 use App\Exception\MscException;
 use App\Kohana\Arr;
 use App\Kohana\Valid;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class Report
 {
@@ -22,23 +27,39 @@ class Report
 
     protected $objReedereiService = null;
 
+    protected $objGeneratedReportsRepository = null;
+
+    /**
+     * Monolog Logger
+     *
+     * @var 
+     */
+    protected $objLogger;
+
+    // protected $objLogger = null;
     /**
      * enthält die min./max-Intervall-Werte für einzelne DB-Werte
      * siehe service.yml
      */
     protected $arrConstraints = null;
 
-    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry)
+    public function __construct(ContainerInterface $objContainer, ManagerRegistry $objDoctrineRegistry, LoggerInterface $objLogger)
     {
         $this->objContainer = $objContainer;
         $this->objDoctrineRegistry = $objDoctrineRegistry;
+        $this->objLogger = $objLogger;
         $arrParameter = $objContainer->getParameter('reports');
         $this->arrConstraints = Arr::get($arrParameter, 'constraints', []);
+
+        // $this->objLogger = $objContainer->get('monolog.logger');
 
         $this->objReedereiRepository = $objDoctrineRegistry
             ->getManager('default')
             ->getRepository(Reederei::class);
 
+        $this->objGeneratedReportsRepository = $objDoctrineRegistry
+            ->getManager('default')
+            ->getRepository(GeneratedReports::class);
     }
 
     /**
@@ -62,9 +83,10 @@ class Report
      * Diese Methode extrahiert aus dem Array von Arrays jeweils 2 Werte und setzt den einen als Key für den anderen isn return - array
      * @return array
      */
-    public function as_array($arrValues, $strKeyKey, $strKeyValue) {
+    public function as_array($arrValues, $strKeyKey, $strKeyValue)
+    {
         $arrRet = [];
-        foreach($arrValues as $arrArr) {
+        foreach ($arrValues as $arrArr) {
             $arrRet[$arrArr[$strKeyKey]] = $arrArr[$strKeyValue];
         }
         return $arrRet;
@@ -88,7 +110,7 @@ class Report
         return $array;
     }
 
-        /**
+    /**
      * Diese Methode checkt, ob ein Wert innerhalb eines Intervalls ist. Wenn nicht, wird der default-Wert zurück gegeben.
      *
      * public static, weil auch von Model_Row_Voyage_Report aufgerufen
@@ -101,14 +123,13 @@ class Report
      */
     public function sanitizeValue($mixedValue, $strConfig, $mixedDefault = 0)
     {
-        if (self::isValid($mixedValue, $strConfig))
-        {
+        if (self::isValid($mixedValue, $strConfig)) {
             return $mixedValue;
         }
         return $mixedDefault;
     }
 
-        /**
+    /**
      * Diese Methode checkt, ob ein Wert innerhalb eines Intervalls ist.
      * Die Intervallgrenzen sind in der config definiert: report.validation
      * Sie müssen als Array-Indizes 'min', 'max' heissen.
@@ -122,12 +143,30 @@ class Report
     {
         $arrConfig = Arr::get($this->arrConstraints, $strConfig);
         // $arrConfig = Kohana::$config->load('report.constraints.' . $strConfig);
-        if (!is_array($arrConfig) || !isset($arrConfig['min']) || !isset($arrConfig['max']))
-        {
+        if (!is_array($arrConfig) || !isset($arrConfig['min']) || !isset($arrConfig['max'])) {
             throw new MscException('Min/Max-Validation-Werte nicht in Config gefunden');
         }
 
         return Valid::range($mixedValue, $arrConfig['min'], $arrConfig['max']);
         // return $mixedValue >= $arrConfig['min'] &&  $mixedValue <= $arrConfig['max'];
+    }
+
+    protected function logForUser(Users $objUser, $strLevel, $strMessage, $arrValues = [])
+    {
+        $this->objLogger->{$strLevel}(strtr('User=:username; id=:user_id : ' . $strMessage,
+            [
+                ':username' => $objUser->getUsername(),
+                ':user_id' => $objUser->getId(),
+            ] + $arrValues
+        ));
+    }
+    protected function logForShip(ShipTable $objShip, $strLevel, $strMessage, $arrValues = [])
+    {
+        $this->objLogger->{$strLevel}(strtr('IMO=:imo;name=:name : ' . $strMessage,
+            [
+                ':imo' => $objShip->getImoNo(),
+                ':name' => str_pad(substr($objShip->getAktName(), 0, 20), 20, ' ', STR_PAD_RIGHT),
+            ] + $arrValues
+        ));
     }
 }

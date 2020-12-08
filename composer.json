@@ -8,6 +8,7 @@
         "gemorroj/archive7z": "^4.0",
         "ircmaxell/random-lib": "^1.2",
         "liip/imagine-bundle": "^2.3",
+        "myclabs/deep-copy": "^1.10",
         "nilportugues/sql-query-builder": "dev-master",
         "qipsius/tcpdf-bundle": "^2.0",
         "roelfsche/jpgraph": "dev-master",

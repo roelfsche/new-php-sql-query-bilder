@@ -171,32 +171,4 @@ class ShipTableRepository extends ServiceEntityRepository
         }
         return $arrShips;
     }
-    // /**
-    //  * @return ShipTable[] Returns an array of ShipTable objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-    return $this->createQueryBuilder('s')
-    ->andWhere('s.exampleField = :val')
-    ->setParameter('val', $value)
-    ->orderBy('s.id', 'ASC')
-    ->setMaxResults(10)
-    ->getQuery()
-    ->getResult()
-    ;
-    }
-     */
-
-    /*
-public function findOneBySomeField($value): ?ShipTable
-{
-return $this->createQueryBuilder('s')
-->andWhere('s.exampleField = :val')
-->setParameter('val', $value)
-->getQuery()
-->getOneOrNullResult()
-;
-}
- */
 }
