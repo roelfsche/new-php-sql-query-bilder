@@ -1,5 +1,5 @@
 {
-"name": "nilportugues/sql-query-builder",
+"name": "roelfsche/sql-query-builder",
 "description": "An elegant lightweight and efficient SQL QueryInterface BuilderInterface supporting bindings and complicated query generation.",
 "keywords": [
 "sql",
